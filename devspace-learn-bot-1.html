@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10131b">
+<title>Devspace | Learn JavaScript & WhatsApp Bot</title>
+<style>
+:root{--bg:#10131b;--panel:#171b26;--panel2:#1d2230;--line:#2a3040;--text:#edf0f7;--muted:#9aa4b7;--blue:#8aa4ff;--blue2:#5c7cfa;--green:#71dfb2;--yellow:#f2ca7a;--red:#ff9292;--radius:18px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:var(--blue)}.app{max-width:1440px;margin:auto;min-height:100vh;display:grid;grid-template-columns:248px minmax(0,1fr)}
+.sidebar{border-right:1px solid var(--line);padding:25px 16px;display:flex;flex-direction:column;gap:28px;background:#121620}.brand{display:flex;align-items:center;gap:11px;padding:0 10px}.brand-mark{width:39px;height:39px;border-radius:13px;background:linear-gradient(145deg,#9bb0ff,#6378ef);display:grid;place-items:center;color:#10131b;font-weight:900;font-size:20px}.brand strong{font-size:17px;letter-spacing:-.5px}.brand small{display:block;color:var(--muted);font-size:11px;margin-top:-4px}.nav-label{color:#717d91;font-size:10px;font-weight:800;letter-spacing:1.5px;padding:0 12px;margin-bottom:8px}.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#aeb7c8;text-align:left;padding:11px 13px;border-radius:11px;display:flex;align-items:center;gap:12px}.nav button:hover,.nav button.active{background:#242b3b;color:white}.nav button.active{box-shadow:inset 3px 0 var(--blue)}.nav .ico{width:21px;text-align:center;font-size:17px}.sidebar-bottom{margin-top:auto}.mini-profile{display:flex;align-items:center;gap:10px;padding:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px}.avatar{width:38px;height:38px;border-radius:12px;background:#303a55;display:grid;place-items:center;font-weight:800;color:#c6d1ff;flex-shrink:0}.mini-profile strong{display:block;font-size:13px}.mini-profile small{display:block;color:var(--muted);font-size:11px}.main{min-width:0}.topbar{height:78px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 34px;gap:15px}.crumb{color:var(--muted);font-size:13px}.top-actions{display:flex;align-items:center;gap:10px}.search{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:9px 12px;color:var(--text);width:min(250px,35vw)}.icon-btn,.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:9px 13px;border-radius:11px}.btn.primary{background:var(--blue2);border-color:var(--blue2);color:white;font-weight:700}.btn.ghost{background:transparent}.btn.small{padding:6px 10px;font-size:12px}.btn:disabled{opacity:.4;cursor:not-allowed}.content{padding:30px 34px 60px;max-width:1200px;margin:auto}.page{display:none}.page.active{display:block}.eyebrow{color:var(--blue);font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}.heading{font-size:clamp(25px,3vw,34px);letter-spacing:-1.1px;line-height:1.2;margin:7px 0 9px}.sub{color:var(--muted);margin:0;max-width:690px}.hero{display:flex;justify-content:space-between;gap:25px;align-items:center;padding:30px;border:1px solid #343b50;border-radius:23px;background:radial-gradient(ellipse at 85% 20%,#303c63 0,transparent 43%),linear-gradient(120deg,#1b2232,#171b26);margin-bottom:23px}.hero-copy{max-width:600px}.hero-art{font-size:70px;filter:drop-shadow(0 10px 22px #090b13);padding:0 25px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:26px}.stat,.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius)}.stat{padding:18px}.stat-top{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}.stat strong{display:block;font-size:26px;margin-top:6px;letter-spacing:-.8px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:27px 0 14px}.section-head h2{font-size:19px;margin:0;letter-spacing:-.4px}.section-head p{color:var(--muted);font-size:12px;margin:3px 0 0}.progress-track{height:6px;border-radius:99px;background:#2a3040;overflow:hidden;margin-top:12px}.progress-fill{height:100%;background:var(--blue);border-radius:99px;transition:width .25s}.course-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.course{padding:18px;cursor:pointer;transition:.18s;min-width:0}.course:hover{transform:translateY(-2px);border-color:#6578bd}.course-top{display:flex;justify-content:space-between;align-items:center}.course-icon{height:42px;width:42px;border-radius:13px;background:#27314a;display:grid;place-items:center;font-size:21px}.tag{font-size:10px;color:var(--green);background:#1e3b35;padding:4px 8px;border-radius:99px;font-weight:700}.course h3{font-size:15px;margin:15px 0 5px}.course p{color:var(--muted);font-size:12px;margin:0;min-height:39px}.course-foot{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:15px}.layout-2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(240px,1fr);gap:17px}.card{padding:22px}.card h2,.card h3{margin-top:0}.muted{color:var(--muted)}.lesson-layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:22px}.lesson-list{align-self:start;position:sticky;top:20px;padding:12px}.lesson-list button{width:100%;display:flex;text-align:left;gap:10px;align-items:flex-start;padding:11px;border:0;background:transparent;color:var(--muted);border-radius:10px;font-size:12px}.lesson-list button.active,.lesson-list button:hover{background:#252c3c;color:white}.lesson-list .num{font-size:11px;background:#30384b;border-radius:7px;padding:2px 7px}.lesson-body{min-width:0}.lesson-body h1{font-size:27px;line-height:1.25;margin:5px 0 10px}.lesson-body h2{font-size:18px;margin:27px 0 8px}.lesson-body p,.lesson-body li{color:#c4cbda}.lesson-body ul,.lesson-body ol{padding-left:23px}.lesson-body code,.inline-code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#252c3c;padding:2px 5px;border-radius:5px;color:#b8c8ff;font-size:.9em}.lesson-body pre,.codebox{background:#0d1017;border:1px solid #2a3040;border-radius:13px;padding:16px;overflow:auto;color:#d9e0ef;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}.callout{padding:14px 16px;border-radius:12px;background:#202a40;border-left:3px solid var(--blue);margin:16px 0;color:#dbe2f5;font-size:13px}.callout.warn{background:#352d20;border-color:var(--yellow)}.lesson-actions{display:flex;justify-content:space-between;gap:10px;margin-top:22px;padding-top:20px;border-top:1px solid var(--line)}.quiz-option{display:block;width:100%;text-align:left;background:#202635;border:1px solid var(--line);color:var(--text);padding:12px 14px;border-radius:10px;margin:8px 0}.quiz-option:hover{border-color:var(--blue)}.quiz-option.correct{border-color:var(--green);background:#1a342d}.quiz-option.wrong{border-color:var(--red);background:#3a242a}.feedback{font-size:13px;margin-top:10px;color:var(--muted)}.builder-grid{display:grid;grid-template-columns:minmax(250px,.8fr) minmax(0,1.4fr);gap:17px;margin-top:22px}.field{display:grid;gap:7px;margin:14px 0}.field label{font-size:12px;color:#c0c8d7;font-weight:700}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:#10141d;color:var(--text);border-radius:10px;padding:11px 12px;min-width:0}.field textarea{min-height:85px;resize:vertical}.segmented{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:4px;background:#10141d;border:1px solid var(--line);border-radius:12px}.segmented button{border:0;background:transparent;color:var(--muted);padding:9px;border-radius:8px;font-size:12px}.segmented button.active{background:#303b56;color:white}.code-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.code-head h3{margin:0;font-size:15px}.code-output{min-height:360px;max-height:600px;overflow:auto;white-space:pre;tab-size:2}.profile-grid{display:grid;grid-template-columns:260px minmax(0,1fr);gap:18px}.profile-card{text-align:center}.profile-big{height:82px;width:82px;margin:5px auto 14px;border-radius:24px;background:#303b56;display:grid;place-items:center;font-size:30px;font-weight:800;color:#d0d9ff}.badge-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}.badge-list span{font-size:11px;padding:6px 9px;border-radius:8px;background:#252c3c;color:#c8d2e6}.playground textarea{width:100%;min-height:170px;background:#0d1017;color:#e3e9f5;border:1px solid var(--line);border-radius:12px;padding:14px;font:13px/1.6 ui-monospace,monospace}.output{min-height:48px;background:#0d1017;border:1px solid var(--line);padding:12px;border-radius:10px;margin-top:10px;white-space:pre-wrap;font:13px/1.5 ui-monospace,monospace;color:var(--green)}.empty{padding:28px;text-align:center;color:var(--muted)}.footer-note{font-size:11px;color:var(--muted);margin-top:18px}.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);background:#e9efff;color:#161b29;padding:11px 16px;border-radius:11px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:.2s;z-index:20}.toast.show{opacity:1;transform:translate(-50%,0)}.mobile-menu{display:none}
+@media(max-width:1000px){.app{grid-template-columns:205px minmax(0,1fr)}.course-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.content{padding:25px 22px}.topbar{padding:0 22px}.hero-art{font-size:50px;padding:0 8px}}
+@media(max-width:720px){.app{display:block}.sidebar{position:fixed;z-index:10;bottom:0;left:0;right:0;height:auto;padding:7px 8px calc(7px + env(safe-area-inset-bottom));border-right:0;border-top:1px solid var(--line);display:block;background:#121620}.brand,.sidebar .nav-label,.sidebar-bottom{display:none}.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}.nav button{padding:7px 3px;justify-content:center;flex-direction:column;gap:1px;font-size:10px}.nav .ico{font-size:17px}.nav button.active{box-shadow:inset 0 2px var(--blue)}.topbar{height:62px;padding:0 15px}.content{padding:20px 14px 100px}.search{width:135px}.hero{padding:21px}.hero-art{display:none}.stats{gap:8px}.stat{padding:12px}.stat strong{font-size:21px}.course-grid{grid-template-columns:1fr}.layout-2,.builder-grid,.profile-grid,.lesson-layout{grid-template-columns:1fr}.lesson-list{position:static;display:flex;overflow:auto;gap:4px;padding:5px}.lesson-list button{width:auto;min-width:130px}.lesson-list button span:last-child{white-space:normal}.lesson-list .num{display:none}.section-head{align-items:start}.card{padding:17px}.lesson-body h1{font-size:24px}.code-output{min-height:300px}.profile-card{text-align:left}.profile-big{margin:0 0 12px}.profile-card .avatar-wrap{display:flex;align-items:center;gap:14px}.profile-card .avatar-wrap .profile-big{flex-shrink:0}}
+
+.login-screen{position:fixed;inset:0;z-index:100;background:radial-gradient(ellipse at 50% 0%,#273454 0,transparent 55%),#10131b;display:grid;place-items:center;padding:20px;overflow:auto}.login-card{width:min(100%,430px);padding:30px;background:#171b26;border:1px solid #30384b;border-radius:22px;box-shadow:0 24px 80px #0006}.login-mark{margin-bottom:20px}.login-card h1{font-size:27px;line-height:1.2;margin:8px 0}.login-card .field{margin:17px 0}.login-card .footer-note{line-height:1.5}
+@media(max-width:900px){.app{display:block}.sidebar{position:fixed;z-index:10;bottom:0;left:0;right:0;height:auto;padding:7px 8px calc(7px + env(safe-area-inset-bottom));border-right:0;border-top:1px solid var(--line);display:block;background:#121620}.brand,.sidebar .nav-label,.sidebar-bottom{display:none}.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}.nav button{padding:7px 3px;justify-content:center;flex-direction:column;gap:1px;font-size:10px}.nav .ico{font-size:17px}.nav button.active{box-shadow:inset 0 2px var(--blue)}.topbar{height:62px;padding:0 15px}.content{padding:20px 14px 100px}.search{width:135px}.hero{padding:21px}.hero-art{display:none}.stats{gap:8px}.stat{padding:12px}.stat strong{font-size:21px}.course-grid{grid-template-columns:1fr}.layout-2,.builder-grid,.profile-grid,.lesson-layout{grid-template-columns:1fr}.lesson-list{position:static;display:flex;overflow:auto;gap:4px;padding:5px}.lesson-list button{width:auto;min-width:130px}.lesson-list button span:last-child{white-space:normal}.lesson-list .num{display:none}.section-head{align-items:start}.card{padding:17px}.lesson-body h1{font-size:24px}.code-output{min-height:300px}.profile-card{text-align:left}.profile-big{margin:0 0 12px}.profile-card .avatar-wrap{display:flex;align-items:center;gap:14px}.profile-card .avatar-wrap .profile-big{flex-shrink:0}}
+
+</style>
+</head>
+<body>
+<div id="login-screen" class="login-screen" style="display:none">
+  <form class="login-card" id="login-form">
+    <div class="brand-mark login-mark">D</div><div class="eyebrow">DEVSPACE ACCOUNT</div>
+    <h1>Mulai perjalanan coding-mu.</h1><p class="muted">Buat profil lokal untuk menyimpan progres belajar di browser ini.</p>
+    <div class="field"><label for="login-name">Nama tampilan</label><input id="login-name" required maxlength="32" placeholder="Nama kamu"></div>
+    <div class="field"><label for="login-email">Email atau username</label><input id="login-email" required maxlength="80" placeholder="kamu@example.com"></div>
+    <div class="field"><label for="login-password">Password</label><input id="login-password" required type="password" minlength="4" placeholder="Minimal 4 karakter"></div>
+    <button class="btn primary" type="submit" style="width:100%">Masuk ke Devspace →</button>
+    <p class="footer-note">Demo front-end saja. Tidak ada server atau akun online. Password tidak disimpan dan tidak dikirim ke mana pun.</p>
+  </form>
+</div>
+<div class="app" id="app-shell">
+<aside class="sidebar">
+  <div class="brand"><div class="brand-mark">D</div><div><strong>devspace</strong><small>LEARN • BUILD • SHIP</small></div></div>
+  <div><div class="nav-label">WORKSPACE</div><nav class="nav">
+    <button class="active" data-page="home"><span class="ico">⌂</span>Beranda</button>
+    <button data-page="learn"><span class="ico">▤</span>Materi belajar</button>
+    <button data-page="builder"><span class="ico">⌘</span>Bot builder</button>
+    <button data-page="profile"><span class="ico">◉</span>Profil saya</button>
+  </nav></div>
+  <div class="sidebar-bottom"><div class="mini-profile"><div class="avatar" id="side-avatar">D</div><div><strong id="side-name">Developer</strong><small id="side-level">Pemula • Level 1</small></div></div></div>
+</aside>
+<main class="main">
+  <header class="topbar"><div class="crumb" id="breadcrumb">Workspace / Beranda</div><div class="top-actions"><input class="search" id="global-search" placeholder="Cari materi..." aria-label="Cari materi"><button class="icon-btn" id="profile-shortcut" title="Buka profil">◉</button></div></header>
+  <div class="content">
+    <section class="page active" id="page-home">
+      <div class="hero"><div class="hero-copy"><div class="eyebrow">YOUR DEVELOPER JOURNEY</div><h1 class="heading">Bangun skill coding.<br>Rakit bot pertamamu.</h1><p class="sub">Belajar JavaScript dari dasar sampai bikin WhatsApp bot dengan langkah kecil, contoh nyata, dan latihan yang bisa langsung dicoba.</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px"><button class="btn primary" onclick="goPage('learn')">Lanjut belajar <span aria-hidden="true">→</span></button><button class="btn ghost" onclick="goPage('builder')">Buka bot builder</button></div></div><div class="hero-art" aria-hidden="true">⌘</div></div>
+      <div class="stats"><div class="stat"><div class="stat-top"><span>Materi selesai</span><span>▤</span></div><strong id="stat-done">0 / 12</strong><div class="progress-track"><div class="progress-fill" id="stat-progress" style="width:0%"></div></div></div><div class="stat"><div class="stat-top"><span>Total XP</span><span>✳</span></div><strong id="stat-xp">0 XP</strong><div class="muted" style="font-size:11px">XP didapat dari materi selesai</div></div><div class="stat"><div class="stat-top"><span>Level saat ini</span><span>↗</span></div><strong id="stat-level">Level 1</strong><div class="muted" id="stat-rank" style="font-size:11px">Code beginner</div></div></div>
+      <div class="section-head"><div><h2>Mulai dari sini</h2><p>Jalur belajar yang disusun dari fondasi ke proyek.</p></div><button class="btn small ghost" onclick="goPage('learn')">Semua materi →</button></div>
+      <div class="course-grid" id="home-courses"></div>
+      <div class="section-head"><div><h2>Ruang eksperimen</h2><p>Coba JavaScript kecil tanpa memasang apa pun.</p></div></div>
+      <div class="card playground"><div class="field"><label for="play-code">JavaScript playground</label><textarea id="play-code">const nama = "Developer";
+console.log(`Halo, ${nama}!`);
+console.log(7 * 6);</textarea></div><button class="btn primary" id="run-playground">▶ Jalankan kode</button><div class="output" id="play-output">Output akan muncul di sini.</div><p class="footer-note">Kode dijalankan lokal di browser ini. Jangan tempel kode yang tidak kamu pahami.</p></div>
+    </section>
+    <section class="page" id="page-learn">
+      <div class="eyebrow">LEARNING PATH</div><h1 class="heading">Materi belajar</h1><p class="sub">Selesaikan materi berurutan. Setiap pelajaran punya penjelasan, contoh, dan kuis singkat.</p>
+      <div class="section-head"><div><h2 id="learn-count">12 pelajaran</h2><p>Fondasi JavaScript sampai bot WhatsApp.</p></div><select id="lesson-filter" class="search" style="width:auto"><option value="all">Semua materi</option><option value="todo">Belum selesai</option><option value="done">Sudah selesai</option></select></div>
+      <div class="lesson-layout"><aside class="card lesson-list" id="lesson-list"></aside><article class="card lesson-body" id="lesson-detail"><div class="empty">Pilih materi di samping untuk mulai belajar.</div></article></div>
+    </section>
+    <section class="page" id="page-builder">
+      <div class="eyebrow">PROJECT WORKBENCH</div><h1 class="heading">WhatsApp bot builder</h1><p class="sub">Pilih gaya command dan cara login, lalu buat starter code yang bisa kamu salin ke project Node.js.</p>
+      <div class="callout warn">Penting: halaman ini adalah pembuat template kode, bukan layanan yang langsung menghubungkan WhatsApp. Jalankan kode di perangkat/server Node.js milikmu. Baileys adalah library tidak resmi, jadi gunakan dengan bertanggung jawab dan hindari spam.</div>
+      <div class="builder-grid"><div class="card">
+        <h3>Konfigurasi bot</h3>
+        <div class="field"><label>Nama bot</label><input id="bot-name" value="DevBot" maxlength="32"></div>
+        <div class="field"><label>Gaya command handler</label><div class="segmented" id="mode-segment"><button class="active" data-mode="if">If / Else</button><button data-mode="switch">Switch Case</button></div><small class="muted">If/else cocok untuk mulai belajar. Switch case rapi saat command makin banyak.</small></div>
+        <div class="field"><label>Metode menghubungkan akun</label><div class="segmented" id="auth-segment"><button class="active" data-auth="qr">QR Code</button><button data-auth="pair">Pairing code</button></div></div>
+        <div class="field" id="phone-field" style="display:none"><label>Nomor WhatsApp (format internasional, angka saja)</label><input id="phone-number" placeholder="62812xxxxxxxx"><small class="muted">Nomor dipakai sebagai contoh dalam kode. Jangan masukkan nomor di perangkat publik.</small></div>
+        <div class="field"><label>Prefix command</label><input id="bot-prefix" value="!" maxlength="4"></div>
+        <button class="btn primary" id="generate-code" style="width:100%">Buat starter code →</button>
+      </div><div class="card">
+        <div class="code-head"><h3 id="code-title">Starter code · QR + If/Else</h3><button class="btn small" id="copy-code">Salin kode</button></div>
+        <pre class="codebox code-output" id="generated-code"></pre>
+        <div class="callout">Langkah berikutnya: buat folder project, jalankan <code>npm init -y</code>, pasang Baileys sesuai dokumentasi versi yang kamu pakai, lalu sesuaikan konfigurasi module. Contoh ini memakai ES Modules.</div>
+      </div></div>
+      <div class="section-head"><div><h2>Checklist sebelum dijalankan</h2><p>Jangan langsung lompat ke deploy.</p></div></div>
+      <div class="card" style="display:grid;gap:11px"><label><input type="checkbox"> Node.js versi yang sesuai sudah terpasang.</label><label><input type="checkbox"> Project punya <code>package.json</code> dengan <code>"type": "module"</code>.</label><label><input type="checkbox"> Folder session dan file rahasia tidak diunggah ke Git.</label><label><input type="checkbox"> Bot diuji ke chat sendiri, bukan dipakai mengirim spam.</label></div>
+      <p class="footer-note">Dokumentasi rujukan: <a href="https://github.com/WhiskeySockets/Baileys" target="_blank" rel="noreferrer">Baileys README</a> · <a href="https://github.com/WhiskeySockets/baileys.wiki-site/blob/main/docs/socket/connecting.md" target="_blank" rel="noreferrer">Panduan koneksi QR & pairing code</a>.</p>
+    </section>
+    <section class="page" id="page-profile">
+      <div class="eyebrow">YOUR ACCOUNT</div><h1 class="heading">Profil saya</h1><p class="sub">Personalisasi ruang belajarmu. Data profil dan progres disimpan di browser perangkat ini.</p>
+      <div class="profile-grid" style="margin-top:22px"><div class="card profile-card"><div class="profile-big" id="profile-avatar">V</div><h2 id="profile-preview-name">Vairon</h2><p class="muted" id="profile-preview-bio">Belajar JavaScript & bikin bot.</p><div class="badge-list" style="justify-content:center"><span id="profile-level-tag">Level 1</span><span id="profile-done-tag">0 materi selesai</span></div></div>
+      <div class="card"><h3>Edit profil</h3><div class="field"><label>Nama tampilan</label><input id="profile-name" maxlength="32" value="Vairon"></div><div class="field"><label>Bio singkat</label><textarea id="profile-bio" maxlength="120">Belajar JavaScript & bikin bot.</textarea></div><div class="field"><label>Inisial avatar</label><input id="profile-initial" maxlength="2" value="V"></div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" id="save-profile">Simpan profil</button><button class="btn ghost" id="reset-progress">Reset progres belajar</button></div><p class="footer-note">Reset progres tidak bisa dibatalkan. Profil tidak memerlukan akun atau mengirim data ke server.</p></div></div>
+    </section>
+  </div>
+</main>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const lessons = [
+{title:"JavaScript & variabel",icon:"⌘",time:"8 menit",desc:"Kenali JavaScript, variabel, tipe data, dan output.",xp:50,body:`
+<p>JavaScript (JS) adalah bahasa pemrograman yang membuat halaman web bisa merespons tindakan dan mengolah data. Di project bot, JavaScript akan berjalan lewat <strong>Node.js</strong>, bukan tab browser.</p>
+<h2>1. Variabel: tempat menyimpan nilai</h2><p>Gunakan <code>const</code> jika variabel tidak akan diisi ulang, dan <code>let</code> jika nilainya memang perlu berubah. Hindari <code>var</code> di kode baru kecuali kamu sedang mempelajari kode lama.</p>
+<pre>const nama = "Budi";
+let jumlahPesan = 0;
+jumlahPesan = jumlahPesan + 1;
+console.log(nama);
+console.log(jumlahPesan);</pre>
+<h2>2. Tipe data dasar</h2><ul><li><code>string</code>: teks, misalnya <code>"Halo"</code>.</li><li><code>number</code>: angka, misalnya <code>42</code>.</li><li><code>boolean</code>: <code>true</code> atau <code>false</code>.</li><li><code>null</code>: nilai kosong yang disengaja.</li><li><code>undefined</code>: nilai belum tersedia.</li></ul>
+<h2>3. Template literal</h2><pre>const user = "Budi";
+console.log(\`Halo, \${user}!\`);
+// Halo, Budi!</pre>
+<div class="callout">Ingat: tanda <code>=</code> memberi nilai. Tanda <code>===</code> membandingkan nilai dan tipe datanya.</div>`,quiz:{q:"Keyword mana yang cocok untuk nilai yang tidak perlu diisi ulang?",opts:["let","const","change","static"],ans:1,why:"const mencegah variabel diberi nilai baru. Isi object/array yang disimpan dalam const masih bisa diubah."}},
+{title:"Operator & if / else",icon:"⑂",time:"10 menit",desc:"Buat program mengambil keputusan berdasarkan kondisi.",xp:60,body:`
+<p>Program memakai kondisi untuk menentukan tindakan. Misalnya, bot hanya membalas command ketika pesan diawali prefix tertentu.</p>
+<h2>1. Operator perbandingan</h2><pre>5 === 5  // true
+5 === "5" // false
+8 > 3    // true
+4 <= 2   // false
+7 !== 6  // true</pre>
+<p>Biasakan memakai <code>===</code> dan <code>!==</code> supaya perbandingan tidak melakukan konversi tipe secara diam-diam.</p>
+<h2>2. If, else if, else</h2><pre>const nilai = 82;
+
+if (nilai >= 90) {
+  console.log("A");
+} else if (nilai >= 75) {
+  console.log("B");
+} else {
+  console.log("Perlu latihan lagi");
+}</pre>
+<p>Urutan kondisi penting. Begitu satu kondisi bernilai benar, blok yang cocok dijalankan dan cabang berikutnya dilewati.</p>
+<h2>3. Operator logika</h2><ul><li><code>&&</code> (AND): semua kondisi harus benar.</li><li><code>||</code> (OR): minimal satu kondisi benar.</li><li><code>!</code> (NOT): membalik nilai boolean.</li></ul>
+<div class="callout">Contoh: <code>if (text.startsWith("!"))</code> memeriksa apakah pesan diawali tanda seru.</div>`,quiz:{q:"Apa hasil dari 5 === \"5\"?",opts:["true","false","Error","undefined"],ans:1,why:"Angka 5 dan teks \"5\" memiliki tipe data berbeda, sehingga strict equality menghasilkan false."}},
+{title:"Switch case",icon:"⑃",time:"8 menit",desc:"Rapikan banyak pilihan command dengan switch.",xp:60,body:`
+<p><code>switch</code> cocok ketika satu nilai dibandingkan dengan beberapa kemungkinan yang jelas, misalnya nama command bot.</p>
+<pre>const command = "ping";
+
+switch (command) {
+  case "ping":
+    console.log("Pong!");
+    break;
+  case "menu":
+    console.log("Daftar command");
+    break;
+  default:
+    console.log("Command tidak dikenal");
+}</pre>
+<h2>Kenapa perlu break?</h2><p><code>break</code> menghentikan eksekusi switch setelah case yang cocok. Tanpa break, program bisa lanjut ke case berikutnya (fall-through). <code>default</code> dijalankan jika tidak ada case yang cocok.</p>
+<h2>Switch atau if/else?</h2><ul><li>Gunakan <code>if/else</code> untuk kondisi rentang atau gabungan, seperti <code>umur >= 18</code>.</li><li>Gunakan <code>switch</code> untuk banyak pilihan dari satu nilai, seperti <code>ping</code>, <code>menu</code>, dan <code>help</code>.</li></ul>`,quiz:{q:"Apa fungsi break di dalam case?",opts:["Mengulang case","Menghentikan switch agar tidak lanjut ke case berikutnya","Menghapus variabel","Membuat fungsi async"],ans:1,why:"break keluar dari switch. Tanpanya, eksekusi dapat berlanjut ke case berikutnya."}},
+{title:"Loop & function",icon:"↻",time:"10 menit",desc:"Ulangi tugas dan pecah kode jadi fungsi yang bisa dipakai ulang.",xp:70,body:`
+<h2>1. For loop</h2><pre>for (let i = 1; i <= 3; i++) {
+  console.log("Percobaan ke-" + i);
+}</pre><p>Bagian pertama membuat penghitung, bagian kedua menentukan kapan loop berhenti, bagian ketiga memperbarui penghitung.</p>
+<h2>2. While loop</h2><pre>let percobaan = 0;
+while (percobaan < 3) {
+  console.log("Mencoba...");
+  percobaan++;
+}</pre><div class="callout warn">Pastikan kondisi while akhirnya menjadi false. Jika tidak, infinite loop bisa membuat program terus berjalan.</div>
+<h2>3. Function, parameter, return</h2><pre>function sapa(nama) {
+  return \`Halo, \${nama}!\`;
+}
+console.log(sapa("Dina"));</pre><p><strong>Parameter</strong> adalah input yang diterima fungsi. <strong>return</strong> mengirim hasil kembali ke pemanggil fungsi.</p>`,quiz:{q:"Apa output loop for (let i=0; i<3; i++) console.log(i)?",opts:["1, 2, 3","0, 1, 2","0, 1, 2, 3","3 saja"],ans:1,why:"Loop dimulai dari 0 dan berhenti sebelum i mencapai 3."}},
+{title:"Array & object",icon:"▦",time:"12 menit",desc:"Kelola daftar dan data dengan struktur yang tepat.",xp:80,body:`
+<h2>1. Array adalah daftar</h2><pre>const buah = ["apel", "jeruk", "mangga"];
+console.log(buah[0]); // apel
+console.log(buah.length); // 3</pre><p>Index array dimulai dari <code>0</code>, jadi item pertama ada di index 0.</p>
+<h2>2. Method yang sering dipakai</h2><pre>const angka = [1, 2, 3];
+angka.push(4); // tambah di akhir
+angka.includes(2); // true
+const genap = angka.filter(n => n % 2 === 0);
+const kaliDua = angka.map(n => n * 2);</pre>
+<h2>3. Object menyimpan data berlabel</h2><pre>const user = {
+  nama: "Dina",
+  admin: false
+};
+console.log(user.nama);
+console.log(user["admin"]);</pre>
+<p>Dalam bot, object sering dipakai untuk menyimpan konfigurasi, sedangkan array cocok untuk daftar command atau daftar item.</p>`,quiz:{q:"Apa hasil dari [1,2,3,4].filter(n => n > 2)?",opts:["[1,2]","[3,4]","[2,3]","[1,2,3,4]"],ans:1,why:"filter mengembalikan item yang lolos kondisi n > 2."}},
+{title:"Async, Promise & error",icon:"◷",time:"12 menit",desc:"Tangani operasi yang membutuhkan waktu dan error dengan aman.",xp:90,body:`
+<p>Operasi seperti membaca file atau mengirim permintaan jaringan membutuhkan waktu. Promise merepresentasikan hasil yang tersedia sekarang atau nanti.</p>
+<h2>1. Async/await</h2><pre>async function ambilData() {
+  return "Data siap";
+}
+
+async function main() {
+  try {
+    const hasil = await ambilData();
+    console.log(hasil);
+  } catch (error) {
+    console.error("Gagal:", error.message);
+  }
+}
+main();</pre>
+<p><code>await</code> menunggu Promise di dalam fungsi <code>async</code>. <code>try/catch</code> membantu menangani error agar tidak membuat alur program gagal tanpa penjelasan.</p>
+<h2>2. Jangan menelan error</h2><p>Log pesan error yang relevan saat development. Hindari menampilkan token, session, atau data pribadi di log publik.</p>`,quiz:{q:"Untuk apa try/catch biasa digunakan?",opts:["Membuat loop","Menangani error yang terjadi di blok try","Mengubah string menjadi angka","Menghubungkan akun"],ans:1,why:"Kode di catch dijalankan jika terjadi error yang dilempar di blok try."}},
+{title:"Node.js & module",icon:"⬡",time:"10 menit",desc:"Jalankan JavaScript di luar browser dan pisahkan kode.",xp:100,body:`
+<p>Node.js adalah runtime untuk menjalankan JavaScript di luar browser. Ini yang memungkinkan bot berjalan sebagai program server.</p>
+<h2>1. Periksa instalasi</h2><pre>node --version
+npm --version</pre><p>Unduh Node.js dari <a href="https://nodejs.org/" target="_blank" rel="noreferrer">situs resmi Node.js</a>. Pilih rilis LTS yang sesuai kebutuhan project dan versi library.</p>
+<h2>2. Jalankan file</h2><pre>// index.js
+console.log("Halo dari Node.js!");
+// Terminal:
+node index.js</pre>
+<h2>3. Pisahkan fungsi</h2><pre>// math.js
+export function tambah(a, b) {
+  return a + b;
+}
+
+// index.js
+import { tambah } from "./math.js";
+console.log(tambah(2, 3));</pre><p>Contoh di atas memakai ES Modules. Tambahkan <code>"type": "module"</code> pada <code>package.json</code> agar file .js menggunakan sintaks import/export.</p>`,quiz:{q:"Perintah dasar untuk menjalankan file index.js adalah...",opts:["node index.js","npm index.js","start node","open index.js"],ans:0,why:"Jalankan node diikuti nama file JavaScript."}},
+{title:"NPM & setup project",icon:"⌁",time:"8 menit",desc:"Buat project, pasang package, dan pahami package.json.",xp:100,body:`
+<h2>1. Mulai project</h2><pre>mkdir bot-wa
+cd bot-wa
+npm init -y</pre><p><code>package.json</code> menyimpan metadata, scripts, dan daftar dependency project.</p>
+<h2>2. Pasang dependency</h2><pre>npm install @whiskeysockets/baileys</pre><p>Ikuti petunjuk instalasi dari dokumentasi Baileys yang kamu pilih. API dan kebutuhan versi dapat berubah, jadi jangan menganggap satu snippet cocok untuk semua versi/fork.</p>
+<h2>3. Script praktis</h2><pre>// package.json (cuplikan)
+{
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  }
+}</pre><p>Jalankan dengan <code>npm start</code>. Folder <code>node_modules</code> berisi package yang dipasang. Jangan edit isinya manual.</p>
+<div class="callout">Simpan lockfile agar instalasi dependency lebih konsisten. Jangan unggah folder session atau kredensial ke repository publik.</div>`,quiz:{q:"Apa fungsi utama package.json?",opts:["Menyimpan foto profil","Mencatat konfigurasi project dan dependency","Menjalankan WhatsApp tanpa Node.js","Mengganti JavaScript"],ans:1,why:"package.json berisi metadata, scripts, dan dependency project."}},
+{title:"Kenalan dengan Baileys",icon:"◉",time:"10 menit",desc:"Pahami socket, event, pesan masuk, dan batasan library.",xp:120,body:`
+<p>Baileys adalah library komunitas untuk berinteraksi dengan WhatsApp Web melalui Node.js. Ini bukan API WhatsApp resmi. Perubahan protokol dapat membuat kode perlu diperbarui.</p>
+<h2>Konsep utama</h2><ul><li><strong>Socket</strong>: koneksi bot ke layanan WhatsApp.</li><li><strong>Event</strong>: pemberitahuan bahwa sesuatu terjadi, misalnya koneksi berubah atau pesan masuk.</li><li><strong>Auth state</strong>: kredensial sesi agar tidak perlu menautkan ulang setiap startup.</li><li><strong>sendMessage</strong>: metode untuk mengirim pesan melalui socket.</li></ul>
+<h2>Alur program</h2><pre>1. Muat auth state
+2. Buat socket
+3. Dengarkan connection.update
+4. Simpan perubahan kredensial
+5. Dengarkan messages.upsert
+6. Proses pesan yang relevan</pre>
+<div class="callout warn">Gunakan akun yang kamu kendalikan, patuhi aturan WhatsApp, dan hindari spam atau pesan massal tanpa izin. Jangan bagikan folder sesi kepada siapa pun.</div>`,quiz:{q:"Apa fungsi event messages.upsert?",opts:["Memasang Node.js","Memberi tahu program tentang pesan yang masuk/ditambahkan","Mengubah tema website","Menghapus package"],ans:1,why:"Event ini digunakan untuk memproses pesan yang diterima atau ditambahkan."}},
+{title:"Koneksi: QR & pairing code",icon:"▦",time:"12 menit",desc:"Pelajari dua cara menautkan akun WhatsApp ke sesi bot.",xp:130,body:`
+<p>Baileys mendukung dua metode penautan yang umum: memindai QR code atau meminta pairing code. Keduanya menautkan perangkat melalui alur WhatsApp Linked Devices.</p>
+<h2>Metode QR code</h2><ol><li>Jalankan bot di terminal.</li><li>Tampilkan QR dari event koneksi menggunakan cara yang didukung versi library.</li><li>Di WhatsApp, buka <strong>Perangkat tertaut / Linked Devices</strong>.</li><li>Pilih tautkan perangkat lalu pindai QR.</li></ol>
+<h2>Metode pairing code</h2><ol><li>Gunakan nomor dengan kode negara, angka saja, tanpa tanda <code>+</code>, spasi, atau tanda hubung.</li><li>Pastikan socket dan auth state disiapkan sesuai dokumentasi versi yang dipakai.</li><li>Minta pairing code setelah tahap koneksi yang tepat, lalu masukkan kode di menu Linked Devices pada WhatsApp.</li></ol>
+<pre>// Pola inti pairing code (sesuaikan dengan versi Baileys)
+const phoneNumber = "62812XXXXXXXX";
+const code = await sock.requestPairingCode(phoneNumber);
+console.log("Pairing code:", code);</pre>
+<div class="callout warn">Jangan kirim QR atau pairing code kepada orang lain. Kode tersebut dapat memberi akses untuk menautkan sesi ke akunmu. API koneksi berubah antarversi, jadi cek dokumentasi resmi sebelum menjalankan kode.</div>`,quiz:{q:"Di mana pairing code dimasukkan?",opts:["Kolom pencarian browser","WhatsApp → Perangkat tertaut / Linked Devices","package.json","Pengaturan Node.js"],ans:1,why:"Pairing code dimasukkan melalui alur penautan perangkat di WhatsApp."}},
+{title:"Menerima & membaca pesan",icon:"✉",time:"12 menit",desc:"Ambil teks pesan, abaikan pesan dari bot sendiri, dan pahami JID.",xp:140,body:`
+<p>Setelah koneksi siap, bot mendengarkan event pesan. Tidak semua pesan berbentuk teks biasa, jadi pemeriksaan perlu dibuat dengan aman.</p>
+<pre>sock.ev.on("messages.upsert", async ({ messages, type }) => {
+  if (type !== "notify") return;
+
+  for (const msg of messages) {
+    if (!msg.message || msg.key.fromMe) continue;
+
+    const text =
+      msg.message.conversation ??
+      msg.message.extendedTextMessage?.text;
+
+    if (!text) continue;
+    console.log("Pesan masuk:", text);
+  }
+});</pre>
+<h2>Istilah penting</h2><ul><li><code>msg.key.fromMe</code>: pesan yang dikirim oleh akun sendiri.</li><li><code>msg.key.remoteJid</code>: ID chat tujuan/sumber yang dapat dipakai untuk membalas.</li><li><code>?.</code>: optional chaining, mencegah akses properti pada nilai null/undefined.</li><li><code>??</code>: memakai nilai cadangan jika nilai kiri null atau undefined.</li></ul>
+<p>Snippet di atas menangani teks percakapan umum, bukan semua format seperti gambar, audio, tombol, atau pesan interaktif.</p>`,quiz:{q:"Kenapa pesan dengan msg.key.fromMe sering diabaikan?",opts:["Agar bot tidak membalas pesannya sendiri","Agar Node.js lebih baru","Agar array menjadi object","Agar QR lebih jelas"],ans:0,why:"Pemeriksaan ini membantu mencegah loop balasan terhadap pesan yang dikirim oleh akun bot sendiri."}},
+{title:"Command handler: if/else atau switch",icon:"⌘",time:"14 menit",desc:"Rakit command !ping, !menu, dan !halo dengan dua gaya.",xp:160,body:`
+<p>Command handler memisahkan pesan biasa dari command yang dimulai prefix. Dua contoh di Bot Builder bisa kamu pilih dan salin.</p>
+<h2>Langkah umum</h2><ol><li>Tentukan prefix, misalnya <code>!</code>.</li><li>Periksa apakah teks diawali prefix.</li><li>Potong prefix lalu ambil nama command.</li><li>Jalankan handler yang sesuai.</li><li>Tangani command tidak dikenal dengan baik.</li></ol>
+<pre>const prefix = "!";
+const input = "!halo Vairon";
+const args = input.slice(prefix.length).trim().split(/\\s+/);
+const command = args.shift().toLowerCase();
+// command = "halo"
+// args = ["Vairon"]</pre>
+<h2>Kapan memilih yang mana?</h2><p><strong>If/else</strong> lebih mudah dipahami saat belajar kondisi. <strong>Switch case</strong> enak dibaca ketika daftar command sudah panjang. Keduanya valid, pilih berdasarkan kebutuhan dan konsistensi project.</p>`,quiz:{q:"Apa isi command setelah parsing pesan '!ping' dengan prefix '!'?",opts:["!ping","ping","!","undefined"],ans:1,why:"Prefix dipotong, lalu teks sisanya diproses sebagai nama command."}},
+{title:"Sesi, keamanan & debugging",icon:"⌑",time:"12 menit",desc:"Jaga kredensial, baca error, dan siapkan bot lebih aman.",xp:180,body:`
+<h2>1. Lindungi auth state</h2><p>Folder sesi berisi kredensial sensitif. Simpan di perangkat/server yang kamu kendalikan dan tambahkan ke <code>.gitignore</code>.</p><pre>node_modules/
+auth_info_baileys/
+.env</pre>
+<h2>2. Debug bertahap</h2><ul><li>Baca pesan error lengkap di terminal.</li><li>Pastikan nama package dan versi sesuai.</li><li>Periksa apakah file menggunakan CommonJS atau ES Modules.</li><li>Tambahkan log seperlunya, tetapi jangan mencetak kredensial.</li><li>Uji satu fitur sebelum menambahkan fitur berikutnya.</li></ul>
+<h2>3. Praktik penggunaan</h2><p>Batasi command admin dengan pemeriksaan izin, jangan menyimpan data pribadi tanpa alasan, dan jangan mengirim pesan massal tanpa persetujuan penerima. Siapkan cara menghentikan bot dan memperbarui dependency.</p>
+<div class="callout">Kamu sudah punya jalur dasar untuk membuat bot. Tahap berikutnya bisa berupa pemisahan command ke file terpisah, database, logging, dan deployment dengan pemantauan.</div>`,quiz:{q:"File/folder mana yang tidak boleh diunggah ke repository publik?",opts:["README.md","auth_info_baileys/","index.js tanpa rahasia","package.json"],ans:1,why:"Folder auth state dapat berisi kredensial sesi yang sensitif."}}
+];
+const storeKey="devspace_v1";
+let data={...{name:"Developer",bio:"Belajar JavaScript & bikin bot.",initial:"D",done:[],xp:0,loggedIn:false},...JSON.parse(localStorage.getItem(storeKey)||"{}")};
+let currentLesson=0, quizAnswered={};
+let builderMode="if", authMode="qr";
+function persist(){localStorage.setItem(storeKey,JSON.stringify(data));}
+function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),1900)}
+function level(){return Math.floor(data.xp/100)+1}
+function rank(){const l=level();return l>=10?"Code architect":l>=6?"Bot builder":l>=3?"Junior coder":"Code beginner"}
+function updateProfileUI(){document.getElementById("side-name").textContent=data.name;document.getElementById("side-avatar").textContent=data.initial||data.name.slice(0,1).toUpperCase();document.getElementById("side-level").textContent=rank()+" • Level "+level();document.getElementById("profile-avatar").textContent=data.initial||data.name.slice(0,1).toUpperCase();document.getElementById("profile-preview-name").textContent=data.name;document.getElementById("profile-preview-bio").textContent=data.bio;document.getElementById("profile-level-tag").textContent="Level "+level();document.getElementById("profile-done-tag").textContent=data.done.length+" materi selesai";document.getElementById("profile-name").value=data.name;document.getElementById("profile-bio").value=data.bio;document.getElementById("profile-initial").value=data.initial||"V"}
+function updateStats(){const pct=data.done.length/lessons.length*100;document.getElementById("stat-done").textContent=`${data.done.length} / ${lessons.length}`;document.getElementById("stat-progress").style.width=pct+"%";document.getElementById("stat-xp").textContent=data.xp+" XP";document.getElementById("stat-level").textContent="Level "+level();document.getElementById("stat-rank").textContent=rank();updateProfileUI()}
+function courseCard(l,i){const done=data.done.includes(i);return `<div class="card course" tabindex="0" role="button" onclick="openLesson(${i})" onkeydown="if(event.key==='Enter')openLesson(${i})"><div class="course-top"><div class="course-icon">${l.icon}</div><span class="tag" style="${done?'color:var(--green)':''}">${done?'SELESAI':`+${l.xp} XP`}</span></div><h3>${i+1}. ${l.title}</h3><p>${l.desc}</p><div class="course-foot"><span>◷ ${l.time}</span><span>${done?'✓ Tuntas':'Mulai belajar →'}</span></div></div>`}
+function renderHome(){document.getElementById("home-courses").innerHTML=lessons.slice(0,3).map((l,i)=>courseCard(l,i)).join("");}
+function renderLessonList(){const filter=document.getElementById("lesson-filter").value;let list=lessons.map((l,i)=>({l,i})).filter(x=>filter==="all"||(filter==="done"&&data.done.includes(x.i))||(filter==="todo"&&!data.done.includes(x.i)));document.getElementById("lesson-count");document.getElementById("lesson-list").innerHTML=list.map(({l,i})=>`<button class="${i===currentLesson?'active':''}" onclick="openLesson(${i})"><span class="num">${data.done.includes(i)?"✓":String(i+1).padStart(2,"0")}</span><span>${l.title}</span></button>`).join("")||'<div class="empty">Belum ada materi di filter ini.</div>'}
+function openLesson(i){currentLesson=i;document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById("page-learn").classList.add("active");document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page==="learn"));document.getElementById("breadcrumb").textContent="Workspace / Materi belajar";renderLessonList();const l=lessons[i],done=data.done.includes(i);quizAnswered[i]=false;document.getElementById("lesson-detail").innerHTML=`<div class="eyebrow">PELAJARAN ${String(i+1).padStart(2,"0")} · ${l.time.toUpperCase()}</div><h1>${l.icon} ${l.title}</h1><p class="muted">${l.desc}</p><div class="progress-track"><div class="progress-fill" style="width:${(i+1)/lessons.length*100}%"></div></div><div class="lesson-copy">${l.body}</div>${!done?`<div class="card" style="background:#131822;margin-top:22px;border-radius:14px"><h2 style="margin-top:0">Cek pemahaman</h2><p>${l.quiz.q}</p><div id="quiz-options">${l.quiz.opts.map((o,j)=>`<button class="quiz-option" onclick="answerQuiz(${i},${j})">${String.fromCharCode(65+j)}. ${o}</button>`).join("")}</div><div class="feedback" id="quiz-feedback"></div></div>`:`<div class="callout">✓ Materi ini sudah kamu selesaikan. Kamu boleh membacanya lagi kapan saja.</div>`}<div class="lesson-actions"><button class="btn ghost" onclick="openLesson(${Math.max(0,i-1)})" ${i===0?'disabled':''}>← Sebelumnya</button>${done?'<button class="btn primary" onclick="openLesson('+Math.min(lessons.length-1,i+1)+')">Materi berikutnya →</button>':'<button class="btn primary" id="finish-lesson" disabled onclick="finishLesson('+i+')">Tandai selesai ✓</button>'}</div><p class="footer-note">Selesaikan kuis untuk membuka tombol penyelesaian. Progres tersimpan di browser perangkat ini.</p>`;document.getElementById("lesson-detail").scrollIntoView({behavior:"smooth",block:"start"})}
+function answerQuiz(i,j){if(quizAnswered[i])return;quizAnswered[i]=true;const l=lessons[i],buttons=[...document.querySelectorAll("#quiz-options button")];buttons.forEach((b,k)=>{if(k===l.quiz.ans)b.classList.add("correct");else if(k===j)b.classList.add("wrong");b.disabled=true});const ok=j===l.quiz.ans;document.getElementById("quiz-feedback").textContent=(ok?"Benar! ":"Belum tepat. ")+l.quiz.why;document.getElementById("quiz-feedback").style.color=ok?"var(--green)":"var(--yellow)";document.getElementById("finish-lesson").disabled=false}
+function finishLesson(i){if(data.done.includes(i))return;data.done.push(i);data.xp+=lessons[i].xp;persist();updateStats();renderHome();renderLessonList();toast("Materi selesai! +"+lessons[i].xp+" XP");openLesson(i)}
+function goPage(page,scroll=true){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById("page-"+page).classList.add("active");document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));const labels={home:"Beranda",learn:"Materi belajar",builder:"Bot builder",profile:"Profil saya"};document.getElementById("breadcrumb").textContent="Workspace / "+labels[page];if(page==="learn"){renderLessonList();if(!document.querySelector("#lesson-detail h1"))openLesson(currentLesson)}if(scroll)window.scrollTo({top:0,behavior:"smooth"})}
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>goPage(b.dataset.page)));document.getElementById("profile-shortcut").onclick=()=>goPage("profile");document.getElementById("lesson-filter").onchange=renderLessonList;
+document.getElementById("global-search").addEventListener("input",e=>{const q=e.target.value.trim().toLowerCase();if(q){goPage("learn",false);document.getElementById("lesson-filter").value="all";const matches=lessons.map((l,i)=>({l,i})).filter(x=>(x.l.title+" "+x.l.desc+" "+x.l.body.replace(/<[^>]*>/g," ")).toLowerCase().includes(q));document.getElementById("lesson-list").innerHTML=matches.map(({l,i})=>`<button onclick="openLesson(${i})"><span class="num">${i+1}</span><span>${l.title}</span></button>`).join("")||'<div class="empty">Materi tidak ditemukan.</div>'}else renderLessonList()});
+document.getElementById("save-profile").onclick=()=>{data.name=document.getElementById("profile-name").value.trim()||"Developer";data.bio=document.getElementById("profile-bio").value.trim()||"Sedang belajar coding.";data.initial=(document.getElementById("profile-initial").value.trim()||data.name[0]).slice(0,2).toUpperCase();persist();updateProfileUI();toast("Profil berhasil disimpan")};
+document.getElementById("reset-progress").onclick=()=>{if(confirm("Yakin reset semua progres dan XP? Tindakan ini tidak bisa dibatalkan.")){data.done=[];data.xp=0;persist();updateStats();renderHome();renderLessonList();openLesson(0);toast("Progres berhasil direset")}};
+document.getElementById("run-playground").onclick=()=>{const code=document.getElementById("play-code").value,out=document.getElementById("play-output");let lines=[];const safeConsole={log:(...a)=>lines.push(a.map(v=>typeof v==="object"?JSON.stringify(v):String(v)).join(" ")),warn:(...a)=>lines.push("WARN: "+a.join(" ")),error:(...a)=>lines.push("ERROR: "+a.join(" "))};try{new Function("console",`"use strict";\n${code}`)(safeConsole);out.textContent=lines.join("\n")||"(Kode berjalan tanpa console output)"}catch(e){out.textContent=e.name+": "+e.message;out.style.color="var(--red)";return}out.style.color="var(--green)"};
+function buildCode(){const name=(document.getElementById("bot-name").value.trim()||"MyBot").replace(/[^a-zA-Z0-9_-]/g,"");const prefix=document.getElementById("bot-prefix").value||"!";const phone=document.getElementById("phone-number").value.trim();const pair=authMode==="pair";let handler=builderMode==="if"?`
+    if (command === "ping") {
+      await sock.sendMessage(jid, { text: "Pong! 🏓" });
+    } else if (command === "menu") {
+      await sock.sendMessage(jid, { text: "📋 Menu ${name}:\\n${prefix}ping - cek bot\\n${prefix}menu - daftar command\\n${prefix}halo [nama] - menyapa" });
+    } else if (command === "halo") {
+      const nama = args.join(" ") || "teman";
+      await sock.sendMessage(jid, { text: \`Halo, \${nama}! 👋\` });
+    } else {
+      // Command tidak dikenal: abaikan atau kirim bantuan.
+    }`:` 
+    switch (command) {
+      case "ping":
+        await sock.sendMessage(jid, { text: "Pong! 🏓" });
+        break;
+      case "menu":
+        await sock.sendMessage(jid, { text: "📋 Menu ${name}:\\n${prefix}ping - cek bot\\n${prefix}menu - daftar command\\n${prefix}halo [nama] - menyapa" });
+        break;
+      case "halo": {
+        const nama = args.join(" ") || "teman";
+        await sock.sendMessage(jid, { text: \`Halo, \${nama}! 👋\` });
+        break;
+      }
+      default:
+        // Command tidak dikenal: abaikan atau kirim bantuan.
+        break;
+    }`;
+let auth=pair?`// Pairing code: nomor harus memakai kode negara, angka saja.
+const phoneNumber = ${JSON.stringify(phone||"62812XXXXXXXX")};
+
+sock.ev.on("connection.update", async ({ connection, qr }) => {
+  if ((connection === "connecting" || qr) && !sock.authState.creds.registered) {
+    try {
+      const code = await sock.requestPairingCode(phoneNumber);
+      console.log("Pairing code:", code);
+    } catch (error) {
+      console.error("Gagal meminta pairing code:", error.message);
+    }
+  }
+});`:`// QR: event update memberikan string QR. Gunakan package qrcode
+// untuk merender QR di terminal atau UI. Jangan bagikan QR ke orang lain.
+import QRCode from "qrcode";
+
+sock.ev.on("connection.update", async ({ connection, lastDisconnect, qr }) => {
+  if (qr) {
+    console.log(await QRCode.toString(qr, { type: "terminal", small: true }));
+  }
+  if (connection === "open") console.log("${name} berhasil terhubung!");
+  if (connection === "close") {
+    console.log("Koneksi terputus. Periksa error dan status logout sebelum reconnect.");
+  }
+});`;
+const code=`// ${name} · starter template
+// Contoh edukasi. Cocokkan API dengan versi Baileys yang dipasang.
+import makeWASocket, { useMultiFileAuthState } from "@whiskeysockets/baileys";
+${pair?"":"import QRCode from \"qrcode\";"} 
+
+async function startBot() {
+  const { state, saveCreds } = await useMultiFileAuthState("./auth_info");
+  const sock = makeWASocket({
+    auth: state,
+    printQRInTerminal: false
+  });
+
+  sock.ev.on("creds.update", saveCreds);
+
+  ${auth.replace(/^/gm,"  ").trim().replaceAll("import QRCode from \"qrcode\";","// Install package qrcode jika memakai metode QR.").replaceAll("import QRCode from 'qrcode';","// Install package qrcode jika memakai metode QR.")}
+
+  sock.ev.on("messages.upsert", async ({ messages, type }) => {
+    if (type !== "notify") return;
+    for (const msg of messages) {
+      if (!msg.message || msg.key.fromMe) continue;
+      const jid = msg.key.remoteJid;
+      const text = msg.message.conversation
+        ?? msg.message.extendedTextMessage?.text;
+      if (!text || !text.startsWith(${JSON.stringify(prefix)})) continue;
+
+      const args = text.slice(${JSON.stringify(prefix)}.length).trim().split(/\\\\s+/);
+      const command = (args.shift() || "").toLowerCase();
+${handler.replace(/^/gm,"      ")}
+    }
+  });
+}
+
+startBot().catch(error => console.error("Bot gagal dijalankan:", error));`;
+document.getElementById("code-title").textContent=`Starter code · ${pair?"Pairing code":"QR"} + ${builderMode==="if"?"If/Else":"Switch Case"}`;document.getElementById("generated-code").textContent=code}
+document.querySelectorAll("#mode-segment button").forEach(b=>b.onclick=()=>{builderMode=b.dataset.mode;document.querySelectorAll("#mode-segment button").forEach(x=>x.classList.toggle("active",x===b));buildCode()});
+document.querySelectorAll("#auth-segment button").forEach(b=>b.onclick=()=>{authMode=b.dataset.auth;document.querySelectorAll("#auth-segment button").forEach(x=>x.classList.toggle("active",x===b));document.getElementById("phone-field").style.display=authMode==="pair"?"grid":"none";buildCode()});
+document.getElementById("generate-code").onclick=()=>{buildCode();toast("Starter code diperbarui")};document.getElementById("bot-name").oninput=buildCode;document.getElementById("bot-prefix").oninput=buildCode;document.getElementById("phone-number").oninput=buildCode;
+document.getElementById("copy-code").onclick=async()=>{try{await navigator.clipboard.writeText(document.getElementById("generated-code").textContent);toast("Kode disalin")}catch(e){const r=document.createRange();r.selectNode(document.getElementById("generated-code"));const s=getSelection();s.removeAllRanges();s.addRange(r);toast("Pilih kode lalu salin")}};
+renderHome();renderLessonList();updateStats();buildCode();
+
+const loginScreen=document.getElementById("login-screen");
+if(!data.loggedIn){loginScreen.style.display="grid";document.getElementById("app-shell").style.display="none";}
+document.getElementById("login-form").addEventListener("submit",e=>{e.preventDefault();const name=document.getElementById("login-name").value.trim();const email=document.getElementById("login-email").value.trim();const password=document.getElementById("login-password").value;if(!name||!email||password.length<4){toast("Lengkapi form login terlebih dahulu");return;}data.name=name;data.initial=name.slice(0,1).toUpperCase();data.bio="Belajar JavaScript & bikin bot.";data.loggedIn=true;persist();loginScreen.style.display="none";document.getElementById("app-shell").style.display="";updateStats();toast("Selamat datang, "+name+"!");});
+
+</script>
+</body>
+</html>
