@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeQuest - Belajar JS & Baileys Bot</title>
+<style>
+  /* ===== RESET & BASE ===== */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #0f0f1a;
+    color: #e0e0e0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  /* ===== GAMIFIED THEME ===== */
+  :root {
+    --primary: #6c5ce7;
+    --secondary: #00cec9;
+    --accent: #fd79a8;
+    --gold: #fdcb6e;
+    --dark: #0f0f1a;
+    --card: #1a1a2e;
+    --card2: #16213e;
+    --success: #00b894;
+    --danger: #e17055;
+    --text: #e0e0e0;
+    --muted: #8888aa;
+  }
+  /* ===== HUD / STATUS BAR ===== */
+  #hud {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(15,15,26,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid var(--primary);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .hud-left { display: flex; align-items: center; gap: 15px; }
+  .hud-right { display: flex; align-items: center; gap: 20px; }
+  .xp-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .xp-bar-bg {
+    width: 160px; height: 12px;
+    background: #2a2a4a;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .xp-bar-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--secondary), var(--primary));
+    border-radius: 6px;
+    transition: width 0.6s ease;
+  }
+  .badge {
+    background: var(--primary);
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .level-badge {
+    background: var(--gold);
+    color: #1a1a2e;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-weight: 800;
+    font-size: 13px;
+  }
+  /* ===== LAYOUT ===== */
+  #app {
+    max-width: 900px;
+    margin: 80px auto 40px;
+    padding: 0 20px;
+  }
+  /* ===== SIDEBAR / MAP ===== */
+  #map {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  .level-card {
+    background: var(--card);
+    border: 2px solid #2a2a4a;
+    border-radius: 14px;
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .level-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(108,92,231,0.3);
+  }
+  .level-card.locked {
+    opacity: 0.45;
+    cursor: not-allowed;
+    border-color: #333;
+  }
+  .level-card.locked::after {
+    content: '🔒';
+    position: absolute;
+    top: 10px; right: 12px;
+    font-size: 18px;
+  }
+  .level-card.completed {
+    border-color: var(--success);
+  }
+  .level-card.completed::after {
+    content: '✅';
+    position: absolute;
+    top: 10px; right: 12px;
+    font-size: 18px;
+  }
+  .level-num {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .level-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .level-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  /* ===== LESSON VIEW ===== */
+  #lesson-view { display: none; }
+  #lesson-view.active { display: block; }
+  .lesson-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .lesson-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+  }
+  .btn {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn:hover { background: #5a4bd1; transform: scale(1.03); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn-success { background: var(--success); }
+  .btn-success:hover { background: #00a382; }
+  .btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+  }
+  .btn-outline:hover { background: var(--primary); color: #fff; }
+  .lesson-content {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 20px;
+    line-height: 1.7;
+  }
+  .lesson-content h3 {
+    color: var(--secondary);
+    margin: 18px 0 10px;
+    font-size: 17px;
+  }
+  .lesson-content p { margin-bottom: 12px; color: #ccc; }
+  .lesson-content ul, .lesson-content ol {
+    margin: 10px 0 15px 22px;
+    color: #ccc;
+  }
+  .lesson-content li { margin-bottom: 6px; }
+  .lesson-content code {
+    background: #2a2a4a;
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    color: var(--secondary);
+  }
+  .lesson-content pre {
+    background: #0a0a15;
+    padding: 16px;
+    border-radius: 10px;
+    overflow-x: auto;
+    margin: 12px 0;
+    border: 1px solid #2a2a4a;
+  }
+  .lesson-content pre code {
+    background: none;
+    padding: 0;
+    color: #e0e0e0;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .highlight-box {
+    background: rgba(0,206,201,0.1);
+    border-left: 4px solid var(--secondary);
+    padding: 14px 18px;
+    border-radius: 0 10px 10px 0;
+    margin: 15px 0;
+    font-size: 14px;
+  }
+  .tip-box {
+    background: rgba(253,203,110,0.1);
+    border-left: 4px solid var(--gold);
+    padding: 14px 18px;
+    border-radius: 0 10px 10px 0;
+    margin: 15px 0;
+    font-size: 14px;
+  }
+  /* ===== QUIZ ===== */
+  .quiz-box {
+    background: var(--card2);
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+  .quiz-box h4 {
+    color: var(--accent);
+    margin-bottom: 14px;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .quiz-question {
+    font-size: 15px;
+    margin-bottom: 14px;
+    color: #fff;
+    font-weight: 600;
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-option {
+    background: #1e1e3a;
+    border: 2px solid #2a2a4a;
+    border-radius: 10px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    color: #ccc;
+  }
+  .quiz-option:hover { border-color: var(--primary); background: #25254a; }
+  .quiz-option.correct {
+    border-color: var(--success);
+    background: rgba(0,184,148,0.15);
+    color: var(--success);
+    font-weight: 700;
+  }
+  .quiz-option.wrong {
+    border-color: var(--danger);
+    background: rgba(225,112,85,0.15);
+    color: var(--danger);
+  }
+  .quiz-feedback {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.ok { background: rgba(0,184,148,0.15); color: var(--success); }
+  .quiz-feedback.no { background: rgba(225,112,85,0.15); color: var(--danger); }
+  /* ===== MINI GAME (Click Counter) ===== */
+  .game-area {
+    background: var(--card2);
+    border-radius: 14px;
+    padding: 25px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .game-target {
+    font-size: 48px;
+    font-weight: 900;
+    color: var(--gold);
+    margin: 15px 0;
+  }
+  .game-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 18px 40px;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin: 10px;
+  }
+  .game-btn:active { transform: scale(0.93); }
+  .game-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  /* ===== CODE PLAYGROUND ===== */
+  .code-playground {
+    background: var(--card2);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .code-playground h4 {
+    color: var(--secondary);
+    margin-bottom: 10px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .code-playground textarea {
+    width: 100%;
+    min-height: 100px;
+    background: #0a0a15;
+    color: #e0e0e0;
+    border: 1px solid #2a2a4a;
+    border-radius: 10px;
+    padding: 14px;
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    resize: vertical;
+    line-height: 1.6;
+  }
+  .code-playground textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  .code-output {
+    background: #0a0a15;
+    border: 1px solid #2a2a4a;
+    border-radius: 10px;
+    padding: 14px;
+    margin-top: 10px;
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    min-height: 40px;
+    color: var(--success);
+    white-space: pre-wrap;
+  }
+  /* ===== COMPLETION MODAL ===== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+    padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--card);
+    border: 2px solid var(--primary);
+    border-radius: 20px;
+    padding: 35px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    animation: popIn 0.4s ease;
+  }
+  @keyframes popIn {
+    0% { transform: scale(0.7); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .modal h2 { color: var(--gold); font-size: 24px; margin-bottom: 10px; }
+  .modal p { color: #ccc; margin-bottom: 20px; font-size: 14px; }
+  .modal .xp-gain {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--secondary);
+    margin: 10px 0;
+  }
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    #hud { padding: 8px 12px; }
+    .xp-bar-bg { width: 100px; }
+    #app { margin-top: 100px; padding: 0 12px; }
+    .lesson-title { font-size: 18px; }
+    .lesson-content { padding: 18px; }
+    #map { grid-template-columns: 1fr 1fr; }
+  }
+  /* ===== CONFETTI ===== */
+  .confetti {
+    position: fixed;
+    width: 10px; height: 10px;
+    top: -10px;
+    z-index: 300;
+    animation: fall linear forwards;
+  }
+  @keyframes fall {
+    to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HUD ===== -->
+<div id="hud">
+  <div class="hud-left">
+    <span class="level-badge" id="hud-level">Lv. 1</span>
+    <div class="xp-container">
+      <span style="font-size:12px;color:var(--muted)">XP</span>
+      <div class="xp-bar-bg"><div class="xp-bar-fill" id="hud-xp-bar"></div></div>
+      <span style="font-size:12px;color:var(--secondary)" id="hud-xp-text">0</span>
+    </div>
+  </div>
+  <div class="hud-right">
+    <span class="badge" id="hud-badge">🐣 Pemula</span>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="app">
+
+  <!-- MAP VIEW -->
+  <div id="map-view">
+    <h2 style="margin-bottom:18px;font-size:20px;color:#fff">🗺️ Peta Petualangan</h2>
+    <div id="map"></div>
+  </div>
+
+  <!-- LESSON VIEW -->
+  <div id="lesson-view">
+    <div class="lesson-header">
+      <button class="btn btn-outline" onclick="backToMap()">← Kembali</button>
+      <span class="lesson-title" id="lesson-title"></span>
+      <span style="font-size:13px;color:var(--muted)" id="lesson-xp-label"></span>
+    </div>
+    <div id="lesson-content"></div>
+  </div>
+
+</div>
+
+<!-- ===== MODAL ===== -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>🎉 Level Selesai!</h2>
+    <p id="modal-desc"></p>
+    <div class="xp-gain" id="modal-xp">+0 XP</div>
+    <button class="btn btn-success" onclick="closeModal()">Lanjut →</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   GAME STATE
+   ============================================================ */
+const state = {
+  xp: 0,
+  level: 1,
+  completed: JSON.parse(localStorage.getItem('cq_completed') || '[]'),
+  currentLesson: null,
+  quizAnswered: {}
+};
+
+const LEVELS = [
+  { id: 0, title: 'Kenalan Sama JS', desc: 'Variabel, tipe data, dan console.log', xp: 50, icon: '🐣' },
+  { id: 1, title: 'Logika Dasar', desc: 'If/else, operator, dan kondisi', xp: 60, icon: '🧠' },
+  { id: 2, title: 'Loop & Fungsi', desc: 'For, while, dan function', xp: 70, icon: '🔁' },
+  { id: 3, title: 'Array & Object', desc: 'Data struktur penting', xp: 80, icon: '📦' },
+  { id: 4, title: 'Async & Promise', desc: 'Cara JS handle operasi lambat', xp: 90, icon: '⏳' },
+  { id: 5, title: 'Node.js Dasar', desc: 'Jalankan JS di luar browser', xp: 100, icon: '🟢' },
+  { id: 6, title: 'NPM & Package', desc: 'Install library & setup project', xp: 110, icon: '📦' },
+  { id: 7, title: 'Bot WhatsApp!', desc: 'Bikin bot dengan Baileys', xp: 150, icon: '🤖' },
+  { id: 8, title: 'Bot Lanjutan', desc: 'Command handler & fitur bot', xp: 180, icon: '🚀' }
+];
+
+/* ============================================================
+   PERSISTENCE
+   ============================================================ */
+function save() {
+  localStorage.setItem('cq_completed', JSON.stringify(state.completed));
+  localStorage.setItem('cq_xp', state.xp);
+  localStorage.setItem('cq_level', state.level);
+}
+function load() {
+  const savedXp = localStorage.getItem('cq_xp');
+  const savedLevel = localStorage.getItem('cq_level');
+  if (savedXp) state.xp = parseInt(savedXp);
+  if (savedLevel) state.level = parseInt(savedLevel);
+}
+load();
+
+/* ============================================================
+   HUD UPDATE
+   ============================================================ */
+function updateHUD() {
+  const xpForNext = state.level * 100;
+  const pct = Math.min(100, (state.xp % xpForNext) / xpForNext * 100);
+  document.getElementById('hud-level').textContent = `Lv. ${state.level}`;
+  document.getElementById('hud-xp-bar').style.width = pct + '%';
+  document.getElementById('hud-xp-text').textContent = state.xp;
+  const badges = ['🐣 Pemula','📖 Pelajar','💡 Coder','⚡ Hacker','🧙 Master','🏆 Legenda'];
+  const bi = Math.min(Math.floor(state.level / 2), badges.length - 1);
+  document.getElementById('hud-badge').textContent = badges[bi];
+}
+updateHUD();
+
+/* ============================================================
+   MAP RENDER
+   ============================================================ */
+function renderMap() {
+  const map = document.getElementById('map');
+  map.innerHTML = '';
+  LEVELS.forEach((lv, i) => {
+    const unlocked = i === 0 || state.completed.includes(i - 1);
+    const done = state.completed.includes(i);
+    const div = document.createElement('div');
+    div.className = 'level-card' + (unlocked ? '' : ' locked') + (done ? ' completed' : '');
+    div.innerHTML = `
+      <div class="level-num">Level ${i + 1}</div>
+      <div class="level-title">${lv.icon} ${lv.title}</div>
+      <div class="level-desc">${lv.desc}</div>
+      <div style="margin-top:8px;font-size:12px;color:var(--gold)">+${lv.xp} XP</div>
+    `;
+    if (unlocked) div.onclick = () => openLesson(i);
+    map.appendChild(div);
+  });
+}
+renderMap();
+
+/* ============================================================
+   LESSON CONTENT DATA
+   ============================================================ */
+const LESSONS = {
+
+0: {
+  content: `
+    <h3>1. Apa itu JavaScript?</h3>
+    <p>JavaScript (JS) adalah bahasa pemrograman yang bikin website jadi <strong>hidup</strong>. Kalau HTML itu kerangka, CSS itu baju, maka JS itu <strong>otak</strong>-nya.</p>
+    <p>Di JS, kita nulis instruksi satu per satu. Tiap instruksi disebut <strong>statement</strong>.</p>
+
+    <h3>2. Variabel — Tempat Nyimpen Data</h3>
+    <p>Variabel itu kayak <strong>kotak</strong> yang punya nama. Kita bisa isi data ke dalamnya.</p>
+    <pre><code>let nama = "Budi";       // teks (string)
+const umur = 17;         // angka (number)
+let sudahJago = false;   // benar/salah (boolean)</code></pre>
+    <div class="tip-box">💡 <strong>let</strong> = nilai bisa berubah. <strong>const</strong> = nilai gak bisa berubah.</div>
+
+    <h3>3. console.log — Cara Ngobrol Sama Komputer</h3>
+    <p><code>console.log()</code> itu cara kita nyuruh JS nampilin sesuatu. Kayak "print" di bahasa lain.</p>
+    <pre><code>console.log("Halo dunia!");
+console.log(2 + 3);        // 5
+console.log(nama);          // Budi</code></pre>
+
+    <h3>4. Tipe Data Dasar</h3>
+    <ul>
+      <li><strong>String</strong> → teks, pakai tanda kutip: <code>"halo"</code> atau <code>'halo'</code></li>
+      <li><strong>Number</strong> → angka: <code>42</code>, <code>3.14</code></li>
+      <li><strong>Boolean</strong> → <code>true</code> atau <code>false</code></li>
+      <li><strong>Array</strong> → daftar: <code>[1, 2, 3]</code></li>
+      <li><strong>Object</strong> → data kompleks: <code>{ nama: "Budi" }</code></li>
+    </ul>
+
+    <h3>5. Operator Aritmatika</h3>
+    <pre><code>console.log(10 + 5);   // 15
+console.log(10 - 5);   // 5
+console.log(10 * 5);   // 50
+console.log(10 / 5);   // 2
+console.log(10 % 3);   // 1 (sisa bagi)</code></pre>
+
+    <h3>6. Gabungin String (Concatenation)</h3>
+    <pre><code>let namaDepan = "Budi";
+let namaBelakang = "Santoso";
+console.log(namaDepan + " " + namaBelakang);
+// Output: Budi Santoso
+
+// Pake template literal (lebih modern):
+console.log(\`Halo, \${namaDepan}!\`);
+// Output: Halo, Budi!</code></pre>
+
+    <div class="highlight-box">🎯 <strong>Intinya:</strong> Variabel nyimpen data, console.log nampilin data, operator ngolah data.</div>
+  `,
+  quiz: {
+    q: 'Gimana cara bikin variabel yang nilainya GAK bisa diubah?',
+    opts: ['let x = 5', 'const x = 5', 'var x = 5', 'int x = 5'],
+    ans: 1,
+    explain: 'const dipake buat variabel yang nilainya tetap. let bisa diubah, var udah kuno.'
+  },
+  game: 'counter'
+},
+
+1: {
+  content: `
+    <h3>1. If / Else — Ngambil Keputusan</h3>
+    <p>JS bisa milih jalan mana yang mau diambil berdasarkan kondisi.</p>
+    <pre><code>let umur = 17;
+if (umur >= 18) {
+  console.log("Boleh bikin KTP");
+} else {
+  console.log("Belum cukup umur");
+}</code></pre>
+
+    <h3>2. Operator Perbandingan</h3>
+    <pre><code>5 === 5    // true  (sama persis)
+5 !== 3    // true  (gak sama)
+10 > 5     // true  (lebih besar)
+10 < 5     // false (lebih kecil)
+10 >= 10   // true  (lebih besar sama dengan)
+10 <= 5    // false (lebih kecil sama dengan)</code></pre>
+    <div class="tip-box">💡 Pakai <strong>===</strong> (tiga sama dengan) buat bandingin. Jangan <strong>==</strong> doang, soalnya bisa aneh.</div>
+
+    <h3>3. Else If — Banyak Pilihan</h3>
+    <pre><code>let nilai = 85;
+if (nilai >= 90) {
+  console.log("A");
+} else if (nilai >= 80) {
+  console.log("B");
+} else if (nilai >= 70) {
+  console.log("C");
+} else {
+  console.log("D");
+}</code></pre>
+
+    <h3>4. Operator Logika</h3>
+    <pre><code>let hujan = true;
+let punyaJasHujan = false;
+
+if (hujan && punyaJasHujan) {
+  console.log("Aman, pake jas hujan");
+} else if (hujan || punyaJasHujan) {
+  console.log("Setengah aman");
+} else {
+  console.log("Kehujanan!");
+}</code></pre>
+    <ul>
+      <li><code>&&</code> (AND) → dua-duanya harus true</li>
+      <li><code>||</code> (OR) → salah satu true udah cukup</li>
+      <li><code>!</code> (NOT) → kebalikan</li>
+    </ul>
+
+    <h3>5. Switch Case</h3>
+    <pre><code>let hari = "Senin";
+switch(hari) {
+  case "Senin":
+    console.log("Hari kerja");
+    break;
+  case "Sabtu":
+    console.log("Hari libur");
+    break;
+  default:
+    console.log("Hari biasa");
+}</code></pre>
+
+    <div class="highlight-box">🎯 <strong>Intinya:</strong> if/else bikin program bisa "mikir" dan milih jalan sendiri.</div>
+  `,
+  quiz: {
+    q: 'Apa hasil dari: console.log(5 === "5")',
+    opts: ['true', 'false', 'error', 'undefined'],
+    ans: 1,
+    explain: '=== ngecek tipe data juga. 5 (number) beda dengan "5" (string).'
+  },
+  game: 'quiz-logic'
+},
+
+2: {
+  content: `
+    <h3>1. Loop — Ngulang Tanpa Capek</h3>
+    <p>Bayangin kamu disuruh nulis "Halo" 100 kali. Males kan? Pakai loop aja.</p>
+    <pre><code>// For loop
+for (let i = 1; i <= 5; i++) {
+  console.log("Halo ke-" + i);
+}</code></pre>
+    <p>Baca: "Mulai dari i=1, selama i kurang dari sama dengan 5, jalanin, terus i naik 1."</p>
+
+    <h3>2. While Loop</h3>
+    <pre><code>let i = 1;
+while (i <= 5) {
+  console.log("Halo ke-" + i);
+}</code></pre>
+    <p>Baca: "Mulai dari i=1, selama i kurang dari sama dengan 5, jalanin, terus i naik 1."</p>
+
+    <h3>2. While Loop</h3>
+    <pre><code>let i = 1;
+while (i <= 5) {
+  console.log("Halo ke-" + i);
+  i++;
+}</code></pre>
+    <div class="tip-box">💡 Hati-hati infinite loop! Pastikan ada yang bikin kondisi berhenti.</div>
+
+    <h3>3. Function — Bikin Alat Sendiri</h3>
+    <p>Function itu kayak <strong>mesin</strong>: kita kasih input, dia olah, terus keluarin output.</p>
+    <pre><code>function sapa(nama) {
+  return "Halo, " + nama + "!";
+}
+
+console.log(sapa("Budi"));  // Halo, Budi!
+console.log(sapa("Ani"));   // Halo, Ani!</code></pre>
+
+    <h3>4. Arrow Function</h3>
+    <pre><code>const sapa = (nama) => {
+  return "Halo, " + nama + "!";
+};
+
+// Lebih singkat (one-liner):
+const tambah = (a, b) => a + b;
+console.log(tambah(2, 3)); // 5</code></pre>
+
+    <h3>5. Parameter & Return</h3>
+    <pre><code>function hitungLuasPersegi(sisi) {
+  return sisi * sisi;
+}
+
+let luas = hitungLuasPersegi(4);
+console.log(luas); // 16</code></pre>
+    <ul>
+      <li><strong>Parameter</strong> = input yang diterima function</li>
+      <li><strong>Return</strong> = output yang dikasih balik</li>
+    </ul>
+
+    <h3>6. Function + Loop = Kuat!</h3>
+    <pre><code>function printBintang(n) {
+  for (let i = 1; i <= n; i++) {
+    console.log("*".repeat(i));
+  }
+}
+printBintang(5);</code></pre>
+
+    <div class="highlight-box">🎯 <strong>Intinya:</strong> Loop buat ngulang, function buat bungkus logika biar bisa dipake berkali-kali.</div>
+  `,
+  quiz: {
+    q: 'Apa output dari: for(let i=0; i<3; i++){console.log(i)}',
+    opts: ['1 2 3', '0 1 2', '0 1 2 3', '1 2'],
+    ans: 1,
+    explain: 'Loop mulai dari i=0, jalan selama i<3. Jadi: 0, 1, 2.'
+  },
+  game: 'loop-visualizer'
+},
+
+3: {
+  content: `
+    <h3>1. Array — Daftar Barang</h3>
+    <p>Array itu kaya <strong>rak</strong> yang bisa nyimpen banyak barang dalam satu variabel.</p>
+    <pre><code>let buah = ["apel", "jeruk", "mangga"];
+console.log(buah[0]);  // apel (index mulai dari 0!)
+console.log(buah.length); // 3</code></pre>
+
+    <h3>2. Method Array Penting</h3>
+    <pre><code>let angka = [3, 1, 4, 1, 5];
+
+angka.push(9);        // tambah di akhir
+angka.pop();          // hapus dari akhir
+angka.unshift(0);     // tambah di awal
+angka.shift();        // hapus dari awal
+angka.sort();         // urutin
+angka.reverse();      // balik urutan
+angka.includes(3);    // cek ada apa gak
+angka.indexOf(4);     // cari posisi</code></pre>
+
+    <h3>3. Loop Array</h3>
+    <pre><code>let buah = ["apel", "jeruk", "mangga"];
+
+// Cara klasik
+for (let i = 0; i < buah.length; i++) {
+  console.log(buah[i]);
+}
+
+// Cara modern (forEach)
+buah.forEach((item) => {
+  console.log(item);
+});</code></pre>
+
+    <h3>4. Map & Filter</h3>
+    <pre><code>let angka = [1, 2, 3, 4, 5];
+
+// map: ubah setiap item
+let dikali2 = angka.map(n => n * 2);
+console.log(dikali2); // [2, 4, 6, 8, 10]
+
+// filter: saring item
+let genap = angka.filter(n => n % 2 === 0);
+console.log(genap); // [2, 4]</code></pre>
+
+    <h3>5. Object — Data Lebih Rapi</h3>
+    <pre><code>let user = {
+  nama: "Budi",
+  umur: 17,
+  hobi: ["coding", "gaming"],
+  sapa: function() {
+    return "Halo, saya " + this.nama;
+  }
+};
+
+console.log(user.nama);       // Budi
+console.log(user["umur"]);    // 17
+console.log(user.sapa());     // Halo, saya Budi</code></pre>
+
+    <h3>6. Array of Objects</h3>
+    <pre><code>let users = [
+  { nama: "Budi", umur: 17 },
+  { nama: "Ani", umur: 19 },
+  { nama: "Cici", umur: 16 }
+];
+
+users.forEach(u => {
+  console.log(u.nama + " - " + u.umur);
+});</code></pre>
+
+    <div class="highlight-box">🎯 <strong>Intinya:</strong> Array buat daftar, object buat data berlabel. Dua-duanya kunci banget buat bot nanti!</div>
+  `,
+  quiz: {
+    q: 'Apa hasil dari: [1,2,3,4].filter(n => n > 2)',
+    opts: ['[1,2]', '[3,4]', '[2,3]', '[1,2,3,4]'],
+    ans: 1,
+    explain: 'filter ngebuang item yang gak memenuhi kondisi. n > 2, jadi yang lolos cuma 3 dan 4.'
+  },
+  game: 'array-match'
+},
+
+4: {
+  content: `
+    <h3>1. Kenapa Async Penting?</h3>
+    <p>JS itu <strong>single-threaded</strong> — cuma bisa ngerjain satu hal dalam satu waktu. Tapi ada operasi yang lambat (baca file, request internet). Kalau di-block, program bakal freeze. Solusinya: <strong>async</strong>.</p>
+
+    <h3>2. Callback (Cara Kuno)</h3>
+    <pre><code>function ambilData(callback) {
+  setTimeout(() => {
+    callback("Data berhasil diambil!");
+  }, 2000);
+}
+
+ambilData((hasil) => {
+  console.log(hasil); // muncul setelah 2 detik
+});</code></pre>
+
+    <h3>3. Promise (Cara Lebih Rapi)</h3>
+    <pre><code>function ambilData() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("Data berhasil!");
+    }, 2000);
+  });
+}
+
+ambilData()
+  .then(hasil => console.log(hasil))
+  .catch(err => console.log("Error:", err));</code></pre>
+
+    <h3>4. Async/Await (Cara Paling Enak)</h3>
+    <pre><code>async function main() {
+  console.log("Mulai...");
+  let hasil = await ambilData();
+  console.log(hasil);
+  console.log("Selesai!");
+}
+
+main();</code></pre>
+    <div class="tip-box">💡 <code>await</code> cuma bisa dipake di dalam function yang ada <code>async</code>-nya.</div>
+
+    <h3>5. Try/Catch — Handle Error</h3>
+    <pre><code>async function main() {
+  try {
+    let data = await ambilData();
+    console.log(data);
+  } catch (error) {
+    console.log("Ada error:", error.message);
+  }
+}</code></pre>
+
+    <div class="highlight-box">🎯 <strong>Intinya:</strong> Async bikin program gak nge-freeze pas nunggu operasi lambat. Nanti di bot, ini kepake banget pas connect ke WhatsApp.</div>
+  `,
+  quiz: {
+    q: 'Keyword apa yang dipake buat nunggu Promise selesai di dalam async function?',
+    opts: ['wait', 'await', 'pause', 'hold'],
+    ans: 1,
+    explain: 'await dipake di dalam async function buat nunggu Promise selesai sebelum lanjut ke baris berikutnya.'
+  },
+  game: null
+},
+
+5: {
+  content: `
+    <h3>1. Node.js Itu Apa?</h3>
+    <p>Node.js itu <strong>bukan bahasa baru</strong>. Node.js itu runtime — tempat ngejalanin JavaScript <strong>di luar browser</strong>, alias di komputer/server.</p>
+    <p>Kalau di browser JS punya <code>document</code> dan <code>window</code>, di Node.js JS punya <code>fs</code> (file system), <code>http</code>, dll.</p>
+
+    <h3>2. Install Node.js</h3>
+    <p>Download dari <strong>nodejs.org</strong>. Pilih versi <strong>LTS</strong> (Long Term Support). Setelah install, cek di terminal:</p>
+    <pre><code>node --version
+// v20.x.x atau lebih baru
+
+npm --version
+// 10.x.x</code></pre>
+    <div class="tip-box">💡 Baileys butuh Node.js versi 20 ke atas. Pastikan versi kamu udah bener.</div>
+
+    <h3>3. Bikin File JS Pertama</h3>
+    <p>Bikin folder baru, terus bikin file <code>index.js</code>:</p>
+    <pre><code>// index.js
+console.log("Halo dari Node.js!");
+console.log("Versi Node:", process.version);
+
+let angka = [1, 2, 3, 4, 5];
+let total = angka.reduce((a, b) => a + b, 0);
+console.log("Total:", total);</code></pre>
+    <p>Jalanin di terminal:</p>
+    <pre><code>node index.js</code></pre>
+
+    <h3>4. Module System</h3>
+    <p>Di Node.js, kita bisa pisah kode ke beberapa file dan import/export.</p>
+    <pre><code>// matematika.js
+function tambah(a, b) { return a + b; }
+function kurang(a, b) { return a - b; }
+
+module.exports = { tambah, kurang };
+
+// index.js
+const mat = require('./matematika');
+console.log(mat.tambah(2, 3)); // 5</code></pre>
+    <p>Atau pakai ES Module (lebih modern):</p>
+    <pre><code>// matematika.js
+export function tambah(a, b) { return a + b; }
+
+// index.js
+import { tambah } from './matematika.js';</code></pre>
+
+    <h3>5. File System (fs)</h3>
+    <pre><code>const fs = require('fs');
+
+// Baca file
+fs.readFile('data.txt', 'utf8', (err, data) => {
+  if (err) throw err;
+  console.log(data);
+});
+
+// Tulis file
+fs.writeFile('output.txt', 'Halo!', (err) => {
+  if (err) throw err;
+  console.log('File berhasil dibuat!');
+});</code></pre>
+
+    <div class="highlight-box">🎯 <strong>Intinya:</strong> Node.js = JS di luar browser. Bisa akses file, bikin server, dan install library pihak ketiga.</div>
+  `,
+  quiz: {
+    q: 'Perintah apa yang dipake buat ngejalanin file index.js di terminal?',
+    opts: ['npm run index.js', 'node index.js', 'run index.js', 'js index.js'],
+    ans: 1,
+    explain: 'node index.js — itu command dasar buat ngejalanin file JavaScript di Node.js.'
+  },
+  game: null
+},
+
+6: {
+  content: `
+    <h3>1. NPM — Node Package Manager</h3>
+    <p>NPM itu <strong>toko aplikasi</strong>-nya programmer JavaScript. Ada jutaan library gratis di sana.</p>
+    <p>Setiap project Node.js biasanya punya file <code>package.json</code> — itu kayak KTP-nya project.</p>
+
+    <h3>2. Bikin Project Baru</h3>
+    <pre><code>mkdir bot-wa
+cd bot-wa
+npm init -y</code></pre>
+    <p>Perintah <code>npm init -y</code> bikin file <code>package.json</code> otomatis.</p>
+
+    <h3>3. Install Package</h3>
+    <pre><code>// Install package biasa
+npm install nama-package
+
+// Install buat development aja
+npm install --save-dev nama-package
+
+// Install global (bisa dipake di mana aja)
+npm install -g nama-package</code></pre>
+    <p>Contoh install Baileys:</p>
+    <pre><code>npm install @whiskeysockets/baileys</code></pre>
+    <div class="tip-box">💡 Setelah install, bakal muncul folder <code>node_modules</code>. Jangan diedit manual, itu isinya library.</div>
+
+    <h3>4. package.json Scripts</h3>
+    <pre><code>{
+  "name": "bot-wa",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^7.0.0"
+  }
+}</code></pre>
+    <p>Jalanin pake:</p>
+    <pre><code>npm start
+npm run dev</code></pre>
+
+    <h3>5. package-lock.json</h3>
+    <p>File ini otomatis dibikin pas install. Fungsinya nyatet versi persis semua library biar konsisten.</p>
+
+    <h3>6. Hapus Package</h3>
+    <pre><code>npm uninstall nama-package</code></pre>
+
+    <div class="highlight-box">🎯 <strong>Intinya:</strong> NPM bikin kita gak perlu nulis semuanya dari nol. Tinggal install, import, pake.</div>
+  `,
+  quiz: {
+    q: 'File apa yang otomatis dibikin pas kita jalanin npm init -y?',
+    opts: ['config.json', 'package.json', 'project.json', 'npm.json'],
+    ans: 1,
+    explain: 'package.json adalah file konfigurasi project Node.js. Isinya nama, versi, dependencies, scripts, dll.'
+  },
+  game: null
+},
+
+7: {
+  content: `
+    <h3>1. Apa itu Baileys?</h3>
+    <p>Baileys adalah <strong>library Node.js</strong> yang bikin kita bisa konek ke WhatsApp Web lewat WebSocket, tanpa perlu browser.</p>
+    <p>Jadi kita bisa kirim/terima pesan WhatsApp secara otomatis pake kode.</p>
+    <div class="tip-box">⚠️ <strong>Penting:</strong> Baileys itu library unofficial. Bukan buatan WhatsApp resmi. Gunain dengan bijak, jangan buat spam!</div>
+
+    <h3>2. Setup Project</h3>
+    <pre><code>mkdir bot-wa
+cd bot-wa
+npm init -y
+npm install @whiskeysockets/baileys
+npm install -D tsx</code></pre>
+    <p>Baileys butuh Node.js v20+. Pastikan versi kamu udah bener.</p>
+
+    <h3>3. Kode Bot Minimal</h3>
+    <p>Bikin file <code>bot.js</code>:</p>
+    <pre><code>import makeWASocket, {
+  DisconnectReason,
+  useMultiFileAuthState
+} from '@whiskeysockets/baileys';
+import { Boom } from '@hapi/boom';
+
+async function connectToWhatsApp() {
+  // 1. Load auth state (session login)
+  const { state, saveCreds } =
+    await useMultiFileAuthState('auth_info_baileys');
+
+  // 2. Bikin socket koneksi
+  const sock = makeWASocket({
+    auth: state
+  });
+
+  // 3. Handle update koneksi
+  sock.ev.on('connection.update', (update) => {
+    const { connection, lastDisconnect, qr } = update;
+
+    if (qr) {
+      console.log('Scan QR code ini pake WhatsApp kamu:');
+      console.log(qr);
+    }
+
+    if (connection === 'close') {
+      const shouldReconnect =
+        (lastDisconnect?.error as Boom)?.output?.statusCode
+        !== DisconnectReason.loggedOut;
+      console.log('Koneksi putus, reconnect:', shouldReconnect);
+      if (shouldReconnect) {
+        connectToWhatsApp();
+      }
+    } else if (connection === 'open') {
+      console.log('Bot berhasil terhubung!');
+    }
+  });
+
+  // 4. Simpan kredensial
+  sock.ev.on('creds.update', saveCreds);
+
+  // 5. Handle pesan masuk
+  sock.ev.on('messages.upsert', async ({ messages }) => {
+    const msg = messages[0];
+    if (!msg.message || msg.key.fromMe) return;
+
+    const text = msg.message.conversation
+      || msg.message.extendedTextMessage?.text;
+
+    if (text) {
+      console.log('Pesan masuk:', text);
+      // Balas pesan
+      await sock.sendMessage(msg.key.remoteJid, {
+        text: 'Bot menerima: ' + text
+      });
+    }
+  });
+}
+
+connectToWhatsApp();</code></pre>
+
+    <h3>4. Jalanin Bot</h3>
+    <pre><code>npx tsx bot.js</code></pre>
+    <p>Nanti bakal muncul QR code di terminal. Scan pake WhatsApp:</p>
+    <ol>
+      <li>Buka WhatsApp di HP</li>
+      <li>Settings → Linked Devices</li>
+      <li>Tap "Link a Device"</li>
+      <li>Scan QR code di terminal</li>
+    </ol>
+
+    <h3>5. Coba Kirim Pesan</h3>
+    <p>Kirim pesan ke nomor WhatsApp kamu dari HP lain. Bot bakal balas otomatis!</p>
+
+    <div class="highlight-box">🎯 <strong>Intinya:</strong> Baileys bikin kita bisa kontrol WhatsApp pake Node.js. Setup-nya: install → bikin socket → handle event → scan QR → jalan!</div>
+  `,
+  quiz: {
+    q: 'Apa yang harus dilakuin pertama kali pas jalanin bot Baileys?',
+    opts: ['Langsung kirim pesan', 'Scan QR code pake WhatsApp', 'Install ulang Node.js', 'Restart komputer'],
+    ans: 1,
+    explain: 'Pertama kali jalan, bot bakal nampilin QR code. Scan pake WhatsApp di HP buat login session.'
+  },
+  game: null
+},
+
+8: {
+  content: `
+    <h3>1. Command Handler</h3>
+    <p>Biar bot bisa handle banyak command, kita bikin sistem prefix + command.</p>
+    <pre><code>const PREFIX = '!';
+
+sock.ev.on('messages.upsert', async ({ messages }) => {
+  const msg = messages[0];
+  if (!msg.message || msg.key.fromMe) return;
+
+  const text = msg.message.conversation
+    || msg.message.extendedTextMessage?.text;
+
+  if (!text || !text.startsWith(PREFIX)) return;
+
+  const args = text.slice(PREFIX.length).trim().split(/ +/);
+  const command = args.shift().toLowerCase();
+
+  switch (command) {
+    case 'ping':
+      await sock.sendMessage(msg.key.remoteJid, {
+        text: 'Pong! 🏓'
+      });
+      break;
+
+    case 'halo':
+      const nama = args[0] || 'kamu';
+      await sock.sendMessage(msg.key.remoteJid, {
+        text: \`Halo, \${nama}! 👋\`
+      });
+      break;
+
+    case 'menu':
+      await sock.sendMessage(msg.key.remoteJid, {
+        text: \`📋 Menu Bot:
+!ping - Cek bot hidup
+!halo [nama] - Sapa
+!menu - Tampilin menu\`
+      });
+      break;
+
+    default:
+      // Command gak dikenal — diem aja
+      break;
+  }
+});</code></pre>
+
+    <h3>2. Kirim Pesan ke Grup</h3>
+    <pre><code>// Kirim ke grup tertentu
+await sock.sendMessage('1234567890@g.us', {
+  text: 'Halo grup!'
+});
+
+// Kirim mention
+await sock.sendMessage(msg.key.remoteJid, {
+  text: \`Halo @\${nomor}!\`,
+  mentions: [nomor + '@s.whatsapp.net']
+});</code></pre>
+
+    <h3>3. Kirim Gambar / Media</h3>
+    <pre><code>// Kirim gambar dari URL
+await sock.sendMessage(msg.key.remoteJid, {
+  image: { url: 'https://example.com/gambar.jpg' },
+  caption: 'Ini gambar!'
+});
+
+// Kirim dokumen
+await sock.sendMessage(msg.key.remoteJid, {
+  document: { url: 'https://example.com/file.pdf' },
+  mimetype: 'application/pdf',
+  fileName: 'dokumen.pdf'
+});</code></pre>
+
+    <h3>4. Auto Reply dengan Keyword</h3>
+    <pre><code>const autoReplies = {
+  'assalamualaikum': 'Waalaikumsalam! 🙏',
+  'makasih': 'Sama-sama! 😊',
+  'p': 'P apa? 😏',
+  'bot': 'Iya, saya bot. Ada yang bisa dibantu?'
+};
+
+sock.ev.on('messages.upsert', async ({ messages }) => {
+  const msg = messages[0];
+  if (!msg.message || msg.key.fromMe) return;
+
+  const text = (msg.message.conversation
+    || msg.message.extendedTextMessage?.text || '').toLowerCase();
+
+  for (const [key, reply] of Object.entries(autoReplies)) {
+    if (text.includes(key)) {
+      await sock.sendMessage(msg.key.remoteJid, { text: reply });
+      break;
+    }
+  }
+});</code></pre>
+
+    <h3>5. Simpan Session Biar Gak Scan Ulang</h3>
+    <p>Pake <code>useMultiFileAuthState('auth_info_baileys')</code>. Folder itu nyimpen session. Jangan dihapus, dan jangan di-commit ke Git!</p>
+    <pre><code>// .gitignore
+auth_info_baileys/
+node_modules/
+.env</code></pre>
+
+    <h3>6. Biar Bot Gak Gampang Ke-ban</h3>
+    <ul>
+      <li>Jangan spam / bulk message</li>
+      <li>Kasih delay antar pesan: <code>await new Promise(r => setTimeout(r, 2000))</code></li>
+      <li>Jangan kirim ke banyak nomor yang gak kenal</li>
+      <li>Jangan langsung balas setiap detik</li>
+    </ul>
+
+    <div class="highlight-box">🎉 <strong>Selamat!</strong> Kamu udah bisa bikin bot WhatsApp pake Baileys. Tinggal tambahin fitur sesuai kebutuhan. Keep learning!</div>
+  `,
+  quiz: {
+    q: 'Folder apa yang NYIMPEN session Baileys biar gak perlu scan QR ulang?',
+    opts: ['node_modules', 'auth_info_baileys', 'src', 'public'],
+    ans: 1,
+    explain: 'useMultiFileAuthState("auth_info_baileys") nyimpen kredensial login di folder itu.'
+  },
+  game: null
+}
+
+};
+
+/* ============================================================
+   LESSON NAVIGATION
+   ============================================================ */
+function openLesson(id) {
+  state.currentLesson = id;
+  const lv = LEVELS[id];
+  document.getElementById('map-view').style.display = 'none';
+  document.getElementById('lesson-view').classList.add('active');
+  document.getElementById('lesson-title').textContent = lv.icon + ' ' + lv.title;
+  document.getElementById('lesson-xp-label').textContent = '+' + lv.xp + ' XP';
+
+  const container = document.getElementById('lesson-content');
+  container.innerHTML = '';
+
+  // Content
+  const contentDiv = document.createElement('div');
+  contentDiv.className = 'lesson-content';
+  contentDiv.innerHTML = LESSONS[id].content;
+  container.appendChild(contentDiv);
+
+  // Mini game (if any)
+  if (LESSONS[id].game && !state.completed.includes(id)) {
+    const gameDiv = document.createElement('div');
+    gameDiv.className = 'game-area';
+    gameDiv.id = 'mini-game';
+    gameDiv.innerHTML = '<h4 style="color:var(--accent);margin-bottom:10px">🎮 MINI GAME</h4>';
+    container.appendChild(gameDiv);
+    renderGame(LESSONS[id].game, gameDiv);
+  }
+
+  // Quiz
+  if (LESSONS[id].quiz && !state.completed.includes(id)) {
+    const quizDiv = document.createElement('div');
+    quizDiv.className = 'quiz-box';
+    quizDiv.innerHTML = `
+      <h4>📝 KUIS</h4>
+      <div class="quiz-question">${LESSONS[id].quiz.q}</div>
+      <div class="quiz-options" id="quiz-opts-${id}">
+        ${LESSONS[id].quiz.opts.map((o, i) =>
+          `<div class="quiz-option" onclick="answerQuiz(${id}, ${i})">${o}</div>`
+        ).join('')}
+      </div>
+      <div class="quiz-feedback" id="quiz-fb-${id}"></div>
+    `;
+    container.appendChild(quizDiv);
+    state.quizAnswered[id] = false;
+  }
+
+  // Complete button
+  const btnDiv = document.createElement('div');
+  btnDiv.style.textAlign = 'center';
+  btnDiv.style.marginTop = '20px';
+
+  if (state.completed.includes(id)) {
+    btnDiv.innerHTML = '<button class="btn btn-success" disabled>✅ Udah Selesai</button>';
+  } else {
+    btnDiv.innerHTML = `<button class="btn btn-success" id="complete-btn" onclick="completeLesson(${id})" disabled>✅ Selesaikan Level</button>`;
+  }
+  container.appendChild(btnDiv);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function backToMap() {
+  document.getElementById('lesson-view').classList.remove('active');
+  document.getElementById('map-view').style.display = 'block';
+  renderMap();
+  updateHUD();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ============================================================
+   QUIZ LOGIC
+   ============================================================ */
+function answerQuiz(lessonId, selected) {
+  if (state.quizAnswered[lessonId]) return;
+  state.quizAnswered[lessonId] = true;
+
+  const quiz = LESSONS[lessonId].quiz;
+  const opts = document.querySelectorAll(`#quiz-opts-${lessonId} .quiz-option`);
+  const fb = document.getElementById(`quiz-fb-${lessonId}`);
+
+  opts.forEach((o, i) => {
+    if (i === quiz.ans) o.classList.add('correct');
+    else if (i === selected && i !== quiz.ans) o.classList.add('wrong');
+    o.style.pointerEvents = 'none';
+  });
+
+  fb.classList.add('show');
+  if (selected === quiz.ans) {
+    fb.classList.add('ok');
+    fb.textContent = '✅ Bener! ' + quiz.explain;
+  } else {
+    fb.classList.add('no');
+    fb.textContent = '❌ Salah. ' + quiz.explain;
+  }
+
+  // Enable complete button if quiz done and game done (or no game)
+  checkCanComplete(lessonId);
+}
+
+function checkCanComplete(lessonId) {
+  const btn = document.getElementById('complete-btn');
+  if (!btn) return;
+  const hasQuiz = LESSONS[lessonId].quiz;
+  const hasGame = LESSONS[lessonId].game;
+  const quizDone = !hasQuiz || state.quizAnswered[lessonId];
+  const gameDone = !hasGame || state.gameDone;
+  if (quizDone && gameDone) {
+    btn.disabled = false;
+  }
+}
+
+/* ============================================================
+   MINI GAMES
+   ============================================================ */
+function renderGame(type, container) {
+  state.gameDone = false;
+
+  if (type === 'counter') {
+    let count = 0;
+    const target = 10;
+    container.innerHTML = `
+      <h4 style="color:var(--accent);margin-bottom:10px">🎮 KLIK 10 KALI!</h4>
+      <div class="game-target" id="game-counter">0 / ${target}</div>
+      <button class="game-btn" id="game-click-btn">KLIK!</button>
+    `;
+    document.getElementById('game-click-btn').onclick = () => {
+      count++;
+      document.getElementById('game-counter').textContent = count + ' / ' + target;
+      if (count >= target) {
+        state.gameDone = true;
+        document.getElementById('game-click-btn').disabled = true;
+        document.getElementById('game-counter').textContent = '🎉 BERHASIL!';
+        checkCanComplete(state.currentLesson);
+      }
+    };
+  }
+
+  if (type === 'quiz-logic') {
+    container.innerHTML = `
+      <h4 style="color:var(--accent);margin-bottom:10px">🎮 TEBAK OUTPUT</h4>
+      <p style="margin-bottom:10px;font-size:14px;color:#ccc">Apa output dari kode berikut?</p>
+      <pre style="background:#0a0a15;padding:12px;border-radius:8px;font-size:13px;color:var(--secondary)">let x = 5;
+if (x > 3) {
+  console.log("Besar");
+} else {
+  console.log("Kecil");
+}</pre>
+      <button class="game-btn" onclick="gameAnswer(this, 'Besar')">"Besar"</button>
+      <button class="game-btn" onclick="gameAnswer(this, 'Kecil')">"Kecil"</button>
+      <button class="game-btn" onclick="gameAnswer(this, 'Error')">Error</button>
+    `;
+  }
+
+  if (type === 'loop-visualizer') {
+    container.innerHTML = `
+      <h4 style="color:var(--accent);margin-bottom:10px">🎮 LOOP OUTPUT</h4>
+      <p style="margin-bottom:10px;font-size:14px;color:#ccc">Apa yang di-print?</p>
+      <pre style="background:#0a0a15;padding:12px;border-radius:8px;font-size:13px;color:var(--secondary)">for (let i = 1; i <= 3; i++) {
+  console.log(i * 10);
+}</pre>
+      <button class="game-btn" onclick="gameAnswer(this, '10 20 30')">10 20 30</button>
+      <button class="game-btn" onclick="gameAnswer(this, '1 2 3')">1 2 3</button>
+      <button class="game-btn" onclick="gameAnswer(this, '10 20')">10 20</button>
+    `;
+  }
+
+  if (type === 'array-match') {
+    container.innerHTML = `
+      <h4 style="color:var(--accent);margin-bottom:10px">🎮 ARRAY PUZZLE</h4>
+      <p style="margin-bottom:10px;font-size:14px;color:#ccc">Apa isi array setelah kode ini jalan?</p>
+      <pre style="background:#0a0a15;padding:12px;border-radius:8px;font-size:13px;color:var(--secondary)">let arr = [1, 2, 3];
+arr.push(4);
+arr.shift();</pre>
+      <button class="game-btn" onclick="gameAnswer(this, '[2, 3, 4]')">[2, 3, 4]</button>
+      <button class="game-btn" onclick="gameAnswer(this, '[1, 2, 3, 4]')">[1, 2, 3, 4]</button>
+      <button class="game-btn" onclick="gameAnswer(this, '[2, 3]')">[2, 3]</button>
+    `;
+  }
+}
+
+function gameAnswer(btn, answer) {
+  const correct = {
+    'Besar': 'Besar',
+    '10 20 30': '10 20 30',
+    '[2, 3, 4]': '[2, 3, 4]'
+  };
+  const isCorrect = correct[answer] !== undefined;
+
+  if (isCorrect) {
+    btn.style.background = 'var(--success)';
+    btn.textContent = '✅ ' + answer;
+    state.gameDone = true;
+    // Disable other buttons
+    btn.parentElement.querySelectorAll('.game-btn').forEach(b => {
+      b.disabled = true;
+      if (b !== btn) b.style.opacity = '0.3';
+    });
+    checkCanComplete(state.currentLesson);
+  } else {
+    btn.style.background = 'var(--danger)';
+    btn.textContent = '❌ ' + answer;
+    btn.disabled = true;
+  }
+}
+
+/* ============================================================
+   COMPLETE LESSON
+   ============================================================ */
+function completeLesson(id) {
+  if (state.completed.includes(id)) return;
+
+  state.completed.push(id);
+  const lv = LEVELS[id];
+  state.xp += lv.xp;
+
+  // Level up logic (tiap 100 XP naik level)
+  const newLevel = Math.floor(state.xp / 100) + 1;
+  if (newLevel > state.level) {
+    state.level = newLevel;
+  }
+
+  save();
+  updateHUD();
+  fireConfetti();
+
+  // Show modal
+  document.getElementById('modal-desc').textContent = `Kamu nyelesain "${lv.title}"!`;
+  document.getElementById('modal-xp').textContent = '+' + lv.xp + ' XP';
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+  backToMap();
+}
+
+/* ============================================================
+   CONFETTI EFFECT
+   ============================================================ */
+function fireConfetti() {
+  const colors = ['#6c5ce7', '#00cec9', '#fd79a8', '#fdcb6e', '#00b894'];
+  for (let i = 0; i < 30; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's';
+    c.style.animationDelay = Math.random() * 0.5 + 's';
+    c.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 3500);
+  }
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+renderMap();
+updateHUD();
+</script>
+</body>
+</html>
+
